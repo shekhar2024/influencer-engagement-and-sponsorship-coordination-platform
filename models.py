@@ -32,7 +32,7 @@ class Campaign(db.Model):
     visibility = db.Column(db.Boolean,nullable=False,default=True)
     sponsor_id = db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
 
-    ad_requests = db.relationship('AdRequest',backref='campaign',lazy=True)
+    ad_requests = db.relationship('Ad_Request',backref='campaign',lazy=True)
     flags = db.relationship('Flagged_Campaign',backref='flagged_campaign',lazy=True)
 
 class Ad_Request(db.Model):
