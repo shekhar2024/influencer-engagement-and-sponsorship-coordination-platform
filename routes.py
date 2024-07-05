@@ -38,6 +38,9 @@ def login_post():
 
     #send the session cookie
     session['user_id'] = user.id
+    session['is_sponsor'] = user.is_sponsor
+    session['is_influencer'] = user.is_influencer
+    session['is_admin'] = user.is_admin
     flash('Logged in successfully')
     return redirect(url_for('index'))
 
@@ -133,6 +136,12 @@ def influencer_profile():
     user = User.query.get(session['user_id'])
     return render_template('influencer_profile.html', user=user)
 
+@app.route('/admin_profile')
+@authenticate
+def admin_profile():
+    user = User.query.get(session['user_id'])
+    return render_template('admin_profile.html', user=user)
+
 @app.route('/sponsor_profile', methods=['POST'])
 @authenticate
 def sponsor_profile_post():
@@ -204,6 +213,37 @@ def influencer_profile_post():
     db.session.commit()
     flash('Profile updated successfully')
     return redirect(url_for('influencer_profile'))
+
+@app.route('/admin_profile', methods=['POST'])
+@authenticate
+def admin_profile_post():
+    username = request.form.get('username')
+    current_password = request.form.get('current_password')
+    new_password = request.form.get('new_password')
+    name = request.form.get('name')
+    
+    if not username or not current_password or not new_password:
+        flash('Please fill out all the required fields')
+        return redirect(url_for('admin_profile'))
+
+    user = User.query.get(session['user_id'])
+    if not check_password_hash(user.passhash, current_password):
+        flash('Incorrect password')
+        return redirect(url_for('admin_profile'))
+
+    if username != user.username:
+        new_username = User.query.filter_by(username=username).first()
+        if new_username:
+            flash('Username already exists')
+            return redirect(url_for('admin_profile'))
+    
+    new_password_hash = generate_password_hash(new_password)
+    user.username = username
+    user.passhash = new_password_hash
+    user.name = name
+    db.session.commit()
+    flash('Profile updated successfully')
+    return redirect(url_for('admin_profile'))
 
 @app.route('/logout')
 @authenticate
