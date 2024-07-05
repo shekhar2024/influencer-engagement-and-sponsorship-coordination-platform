@@ -1,5 +1,6 @@
 from app import app
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash
 
 db = SQLAlchemy(app)
 
@@ -54,3 +55,11 @@ class Flagged_Campaign(db.Model):
 
 with app.app_context():
     db.create_all()
+#if admin exists, else create admin
+    if not User.query.filter_by(is_admin=True).first():
+        password_hash = generate_password_hash('admin')
+        admin = User(username='admin', name="Admin", passhash=password_hash,is_admin=True)
+        db.session.add(admin)
+        db.session.commit()
+
+

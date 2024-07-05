@@ -1,11 +1,17 @@
-from flask import render_template,request,redirect,url_for,flash
+from flask import render_template,request,redirect,url_for,flash, session
 from app import app
 from models import db,User,Campaign,Ad_Request,Flagged_User,Flagged_Campaign
 from werkzeug.security import generate_password_hash,check_password_hash
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    #authentication:if user_id is in session, then user is logged in
+    if 'user_id' in session:
+        return render_template('index.html')
+    else:
+        flash('Please login to access this page')
+        return redirect(url_for('login'))
+    
 
 @app.route('/login')
 def login():
@@ -38,6 +44,9 @@ def login_post():
         flash('Incorrect password')
         return redirect(url_for('login'))
 
+    #send the session cookie
+    session['user_id'] = user.id
+    flash('Logged in successfully')
     return redirect(url_for('index'))
 
 @app.route('/sponsor_register', methods=['POST'])
