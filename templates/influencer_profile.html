@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Influencer Profile Page
+{% endblock %}
+
+{% block content %}
+    <h1 class="display-6">
+        Hello
+        <span class="text-muted">@{{user.name}}</span>, Category: <span class="text-muted">{{user.category}}</span>, Niche: <span class="text-muted">{{user.niche}}</span>, Reach: <span class="text-muted">{{user.reach}}</span>
+    </h1>
+    <a href="{{url_for('logout')}}" class="btn btn-outline-danger">Logout</a>
+
+    <!--form to change password and username-->
+
+    <form action="" method="post" class="form">
+        <div class="form-group">
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" name="username" id="username" value="{{user.username}}" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="current_password" class="form-label">Current Password:</label>
+            <input type="password" name="current_password" id="current_password" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="new_password" class="form-label">New Password:</label>
+            <input type="password" name="new_password" id="new_password" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="name" class="form-label">Name:</label>
+            <input type="text" name="name" id="name" value="{{user.name}}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="category" class="form-label">Category:</label>
+            <input type="text" name="category" id="category" value="{{user.category}}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="niche" class="form-label">Niche:</label>
+            <input type="text" name="niche" id="niche" value="{{user.niche}}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="reach" class="form-label">Reach:</label>
+            <input type="number" name="reach" id="reach" value="{{user.reach}}" class="form-control">
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+    </form>
+{% endblock %}
