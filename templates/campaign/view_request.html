@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+
+    View Request
+
+{% endblock %}
+
+{% block content %}
+    <p>Campaign : {{request.campaign_title}}</p>
+    <p>Influencer's Username : {{request.influencer_name}}</p>
+    <p>Requirements : {{request.requirements}}</p>
+    <p>Payment : {{request.payment}}</p>
+    <p>Status : {{request.status}}</p>
+
+ 
+{% endblock %}
+
+{% block script %}
+ 
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+
+    Campaign
+
+{% endblock %}
+
+{% block content %}
+    <h1 class="display-1">{{campaign.title}}</h1>
+    <p>Description : {{campaign.description}}</p>
+    <p>Strat Date : {{campaign.start_date}}</p>
+    <p>End Date : {{campaign.end_date}}</p>
+    <p>Budget : {{campaign.budget}}</p>
+    <p>Category : {{campaign.category}}</p>
+    <p>Visibility : {{campaign.visibility}}</p>
+    <p>Status : {{campaign.status}}</p>
+
+ 
+{% endblock %}
+
+{% block script %}
+ 
+{% endblock %}

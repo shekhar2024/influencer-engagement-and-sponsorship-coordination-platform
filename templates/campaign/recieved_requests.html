@@ -1,0 +1,46 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+
+    Recieved Requests
+
+{% endblock %}
+
+{% block content %}
+
+    <h1 class="display-2">Recieved Requests for {{campaign.title}}</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Request id</th>
+                <th>Influencer's Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in requests %}
+            <tr>
+                <td>{{request.id}}</td>
+                <td>{{request.influencer_name}}</td>
+                <td>
+                    <a href="{{url_for('view_requests_sponsor', id=request.id)}}" class="btn btn-primary">
+                        <i class="fas fa-search    "></i>
+                        View
+                    </a>
+                    <a href="{{url_for('recieved_requests_sponsor', id=campaign.id)}}" class="btn btn-success">
+                        <i class="fa-sharp fa-solid fa-check"></i>
+                        Accept
+                    </a>
+                    <a href="{{url_for('recieved_requests_sponsor', id=campaign.id)}}" class="btn btn-danger">
+                        <i class="fas fa-trash"></i>
+                        Reject
+                    </a>
+                </td>
+                <td>{{request.status}}</td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+    {% endblock %}

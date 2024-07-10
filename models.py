@@ -19,8 +19,9 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean,nullable=False,default=False)
 
     campaigns = db.relationship('Campaign',backref='sponsor',lazy=True)
-    ad_requests = db.relationship('Ad_Request',backref='requester',lazy=True)
-    flags = db.relationship('Flagged_User',backref='flagged_user',lazy=True)
+    ad_requests_bysponsor = db.relationship('Ad_Request_bysponsor',backref='sponsor',lazy=True)
+    ad_requests_byinfluencer = db.relationship('Ad_Request_byinfluencer',backref='influencer',lazy=True)
+    flag = db.relationship('Flagged_User',backref='flagged_user',uselist=False)
 
 class Campaign(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -30,18 +31,31 @@ class Campaign(db.Model):
     end_date = db.Column(db.DateTime,nullable=False)
     budget = db.Column(db.Integer,nullable=False)
     category = db.Column(db.String(100),nullable=True)
-    visibility = db.Column(db.Boolean,nullable=False,default=True)
+    visibility = db.Column(db.String(32),nullable=False,default='Public')
+    status = db.Column(db.String(30),nullable=False,default='pending')
     sponsor_id = db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
 
-    ad_requests = db.relationship('Ad_Request',backref='campaign',lazy=True)
-    flags = db.relationship('Flagged_Campaign',backref='flagged_campaign',lazy=True)
+    ad_requests_bysponsor = db.relationship('Ad_Request_bysponsor',backref='campaign',lazy=True)
+    ad_requests_byinfluencer = db.relationship('Ad_Request_byinfluencer',backref='campaign',lazy=True)
+    flag = db.relationship('Flagged_Campaign',backref='flagged_campaign',uselist=False)
 
-class Ad_Request(db.Model):
+class Ad_Request_bysponsor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    influencer_name = db.Column(db.String(64),nullable=True)
     influencer_id = db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
+    campaign_title = db.Column(db.String(100),nullable=True)
     campaign_id = db.Column(db.Integer,db.ForeignKey('campaign.id'),nullable=False)
     status = db.Column(db.String(30),nullable=False,default='pending')
-    message = db.Column(db.String(1000),nullable=True)
+    payment = db.Column(db.Integer,nullable=True)
+    requirements = db.Column(db.String(1000),nullable=True)
+
+class Ad_Request_byinfluencer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    influencer_name = db.Column(db.String(64),nullable=True)
+    influencer_id = db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
+    campaign_title = db.Column(db.String(100),nullable=True)
+    campaign_id = db.Column(db.Integer,db.ForeignKey('campaign.id'),nullable=False)
+    status = db.Column(db.String(30),nullable=False,default='pending')
     payment = db.Column(db.Integer,nullable=True)
     requirements = db.Column(db.String(1000),nullable=True)
 
@@ -61,5 +75,7 @@ with app.app_context():
         admin = User(username='admin', name="Admin", passhash=password_hash,is_admin=True)
         db.session.add(admin)
         db.session.commit()
+
+    
 
 
