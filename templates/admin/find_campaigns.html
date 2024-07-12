@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    {% include 'searchbar.html' with context %}
+    <hr>
+    <h1 class="display-2">Campaigns</h1>
+    <div class="campaign-list">
+        {% for campaign in campaigns %}
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">{{campaign.title}}</h5>
+              <p class="card-text">
+                Category : {{campaign.category}}
+                <br>
+                Start Date : {{campaign.start_date}}
+                <br>
+                End Date : {{campaign.end_date}}
+                <br>
+                Sponsor : {{campaign.sponsor.username}}
+                <br>
+                Status : {{campaign.status}}
+                <br>
+                Visibility : {{campaign.visibility}}
+              </p>
+                <a href="{{url_for('view_campaign', id=campaign.id)}}" class="btn btn-primary">
+                     <i class="fa fa-search" ></i>
+                        View
+                </a>
+              {% if campaign.flag %}
+              <a href="{{url_for('unflag_campaign', id=campaign.id)}}" class="btn btn-success">Unflag</a>
+              {% else %}
+              <a href="{{url_for('flag_campaign', id=campaign.id)}}" class="btn btn-danger">Flag</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+{% endblock %}
+{% block style %}
+    <style>
+        .campaign-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .card {
+            margin: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+    
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+
+    Edit Request
+
+{% endblock %}
+
+{% block content %}
+
+    <h1 class="display-6">Edit Ad Request</h1>
+
+    <form action="" method="post" class="form">
+        <div class="form-group">
+            <label for="campaign_id" class="form-label">Campaign</label>
+            <select name="campaign_id" id="campaign_id" class="form-control" required>
+                {% for camp in campaigns %}
+                {% if camp.id == request.campaign_id %}
+                <option selected value="{{camp.id}}">{{camp.title}}</option>
+                {% else %}
+                    <option value="{{camp.id}}">{{camp.title}}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="influencer_id" class="form-label">Influencer's User Name</label>
+            <select name="influencer_id" id="influencer_id" class="form-control" required>
+                {% for influencer in influencers %}
+                {% if influencer.id == request.influencer_id %}
+                <option selected value="{{influencer.id}}">{{influencer.username}}</option>
+                {% else %}
+                    <option value="{{influencer.id}}">{{influencer.username}}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="requirements" class="form-label">Requirements</label>
+            <input type="text" name="requirements" id="requirements" value="{{request.requirements}}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="payment" class="form-label">Payment</label>
+            <input type="number" name="payment" id="payment" min="0" value="{{request.payment}}" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-paper-plane    "></i>
+            Update
+        </button>
+    </form>
+
+{% endblock %}

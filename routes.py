@@ -73,6 +73,7 @@ def sponsor_register_post():
     new_user = User(username=username, name=name, industry=industry, budget=budget, passhash=password_hash, is_sponsor=True)
     db.session.add(new_user)
     db.session.commit()
+    flash('Registered successfully')
     return redirect(url_for('login'))
 
 @app.route('/influencer_register', methods=['POST'])
@@ -104,6 +105,7 @@ def influencer_register_post():
     new_user = User(username=username, name=name, category=category, niche=niche, reach=reach, passhash=password_hash, is_influencer=True)
     db.session.add(new_user)
     db.session.commit()
+    flash('Registered successfully')
     return redirect(url_for('login'))
 
 #-----
@@ -168,6 +170,8 @@ def index():
     user = User.query.get(session['user_id'])
     if user.is_sponsor:
         return redirect(url_for('sponsor'))
+    if user.is_admin:
+        return redirect(url_for('admin_dashboard'))
     return render_template('index.html')
 
 @app.route('/sponsor_profile')
@@ -316,7 +320,8 @@ def campaigns():
 @app.route('/campaign/add')
 @sponsor_required
 def add_campaign():
-    return render_template('campaign/add_campaign.html')
+    now = datetime.now().strftime('%Y-%m-%d')
+    return render_template('campaign/add_campaign.html', now=now)
 
 @app.route('/campaign/add', methods=['POST'])
 @sponsor_required
@@ -359,7 +364,7 @@ def add_campaign_post():
     return redirect(url_for('campaigns'))
 
 @app.route('/campaign/<int:id>')
-@sponsor_required
+@authenticate
 def view_campaign(id):
     campaign = Campaign.query.get(id)
     if not campaign:
@@ -374,7 +379,8 @@ def edit_campaign(id):
     if not campaign:
         flash('Campaign does not exist')
         return redirect(url_for('campaigns'))
-    return render_template('campaign/edit_campaign.html', campaign=campaign)
+    now = datetime.now().strftime('%Y-%m-%d')
+    return render_template('campaign/edit_campaign.html', campaign=campaign, now=now)
 
 @app.route('/campaign/<int:id>/edit', methods=['POST'])
 @sponsor_required
@@ -530,7 +536,208 @@ def view_request_sponsor(request_id):
         request = request_2
     return render_template('campaign/view_request.html', request=request)
 
+@app.route('/campaign/request/<int:request_id>/edit')
+@sponsor_required
+def edit_request_sponsor(request_id):
+    influencers = User.query.filter_by(is_influencer=True).all()
+    campaigns = Campaign.query.filter_by(sponsor_id=session['user_id']).all()
+    request = Ad_Request_bysponsor.query.get(request_id)
+    if not request:
+        flash('Request does not exist')
+        return redirect(url_for('campaigns'))
+    return render_template('campaign/edit_request.html', request=request, influencers=influencers, campaigns=campaigns)
 
-    
+@app.route('/campaign/request/<int:request_id>/edit', methods=['POST'])
+@sponsor_required
+def edit_request_sponsor_post(request_id):
+    req = Ad_Request_bysponsor.query.get(request_id)
+    if not request:
+        flash('Request does not exist')
+        return redirect(url_for('campaigns'))
+    campaign_id = request.form.get('campaign_id')
+    influencer_id = request.form.get('influencer_id')
+    payment = request.form.get('payment')
+    requirements = request.form.get('requirements')
 
+    campaign = Campaign.query.get(campaign_id)
+    influencer = User.query.get(influencer_id)
+
+    if not campaign:
+        flash('Campaign does not exist')
+        return redirect(url_for('campaigns'))
+
+    if not influencer:
+        flash('Influencer does not exist')
+        return redirect(url_for('edit_request_sponsor', request_id=request_id))
+
+    campaign_name = campaign.title
+    influencer_username = influencer.username
+
+    if not payment or not requirements:
+        flash('Please fill out all the required fields')
+        return redirect(url_for('edit_request_sponsor', request_id=request_id))
+
+    try:
+        payment = float(payment)
+    except ValueError:
+        flash('Invalid payment amount')
+        return redirect(url_for('edit_request_sponsor', request_id=request_id))
+
+    if payment < 0:
+        flash('Payment cannot be negative')
+        return redirect(url_for('edit_request_sponsor', request_id=request_id))
+
+    req.influencer_name = influencer_username
+    req.influencer_id = influencer_id
+    req.campaign_title = campaign_name
+    req.campaign_id = campaign_id
+    req.payment = payment
+    req.requirements = requirements
+    db.session.commit()
+
+    flash('Request updated successfully')
+    return redirect(url_for('sent_requests_sponsor', id=campaign_id))
+
+@app.route('/campaign/request/<int:request_id>/delete')
+@sponsor_required
+def delete_request_sponsor(request_id):
+    request = Ad_Request_bysponsor.query.get(request_id)
+    if not request:
+        flash('Request does not exist')
+        return redirect(url_for('campaigns'))
+    return render_template('campaign/delete_request.html', request=request)
+
+@app.route('/campaign/request/<int:request_id>/delete', methods=['POST'])
+@sponsor_required
+def delete_request_sponsor_post(request_id):
+    request = Ad_Request_bysponsor.query.get(request_id)
+    if not request:
+        flash('Request does not exist')
+        return redirect(url_for('campaigns'))
+    campaign_id = request.campaign_id
+    db.session.delete(request)
+    db.session.commit()
+    flash('Request deleted successfully')
+    return redirect(url_for('sent_requests_sponsor', id=campaign_id))
+
+#-----Admin Pages-----#
+
+@app.route('/find_users')
+@admin_required
+def find_users():
+    users = User.query.all()
+    return render_template('admin/find_users.html', users=users)
+
+@app.route('/flag_user/<int:id>')
+@admin_required
+def flag_user(id):
+    user = User.query.get(id)
+    if not user:
+        flash('User does not exist')
+        return redirect(url_for('find_users'))
+    return render_template('admin/flag_user.html', user=user)
     
+@app.route('/flag_user/<int:id>', methods=['POST'])
+@admin_required
+def flag_user_post(id):
+    user = User.query.get(id)
+    if not user:
+        flash('User does not exist')
+        return redirect(url_for('find_users'))
+    new_flag = Flagged_User(user_id=id)
+    db.session.add(new_flag)
+    db.session.commit()
+    flash('User flagged successfully')
+    return redirect(url_for('find_users'))
+
+@app.route('/unflag_user/<int:id>')
+@admin_required
+def unflag_user(id):
+    user = User.query.get(id)
+    if not user:
+        flash('User does not exist')
+        return redirect(url_for('find_users'))
+    flag = Flagged_User.query.filter_by(user_id=id).first()
+    db.session.delete(flag)
+    db.session.commit()
+    flash('User unflagged successfully')
+    return redirect(url_for('find_users'))
+
+@app.route('/find_campaigns')
+@admin_required
+def find_campaigns():
+    campaigns = Campaign.query.all()
+    return render_template('admin/find_campaigns.html', campaigns=campaigns)
+
+@app.route('/flag_campaign/<int:id>')
+@admin_required
+def flag_campaign(id):
+    campaign = Campaign.query.get(id)
+    if not campaign:
+        flash('Campaign does not exist')
+        return redirect(url_for('find_campaigns'))
+    return render_template('admin/flag_campaign.html', campaign=campaign)
+
+@app.route('/flag_campaign/<int:id>', methods=['POST'])
+@admin_required
+def flag_campaign_post(id):
+    campaign = Campaign.query.get(id)
+    if not campaign:
+        flash('Campaign does not exist')
+        return redirect(url_for('find_campaigns'))
+    new_flag = Flagged_Campaign(campaign_id=id)
+    db.session.add(new_flag)
+    db.session.commit()
+    flash('Campaign flagged successfully')
+    return redirect(url_for('find_campaigns'))
+
+@app.route('/unflag_campaign/<int:id>')
+@admin_required
+def unflag_campaign(id):
+    campaign = Campaign.query.get(id)
+    if not campaign:
+        flash('Campaign does not exist')
+        return redirect(url_for('find_campaigns'))
+    flag = Flagged_Campaign.query.filter_by(campaign_id=id).first()
+    db.session.delete(flag)
+    db.session.commit()
+    flash('Campaign unflagged successfully')
+    return redirect(url_for('find_campaigns'))
+
+@app.route('/admin_dashboard')
+@admin_required
+def admin_dashboard():
+    flagged_users = Flagged_User.query.all()
+    flagged_campaigns = Flagged_Campaign.query.all()
+    sponsors = User.query.filter_by(is_sponsor=True).all()
+    influencers = User.query.filter_by(is_influencer=True).all()
+    campaigns = Campaign.query.all()
+    request_sponsor = Ad_Request_bysponsor.query.all()
+    request_influencer = Ad_Request_byinfluencer.query.all()
+    request_accepted_sponsor = Ad_Request_byinfluencer.query.filter_by(status='accepted').all()
+    request_accepted_influencer = Ad_Request_bysponsor.query.filter_by(status='accepted').all()
+    return render_template('admin/admin_dashboard.html', flagged_users=flagged_users, flagged_campaigns=flagged_campaigns, sponsors=sponsors, influencers=influencers, campaigns=campaigns, request_sponsor=request_sponsor, request_influencer=request_influencer, request_accepted_sponsor=request_accepted_sponsor, request_accepted_influencer=request_accepted_influencer)
+
+@app.route('/admin_dashboard/unflag_user/<int:id>')
+@admin_required
+def unflag_user_dashboard(id):
+    flag = Flagged_User.query.get(id)
+    if not flag:
+        flash('User is not flagged or does not exist')
+        return redirect(url_for('admin_dashboard'))
+    db.session.delete(flag)
+    db.session.commit()
+    flash('User unflagged successfully')
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin_dashboard/unflag_campaign/<int:id>')
+@admin_required
+def unflag_campaign_dashboard(id):
+    flag = Flagged_Campaign.query.get(id)
+    if not flag:
+        flash('Campaign is not flagged or does not exist')
+        return redirect(url_for('admin_dashboard'))
+    db.session.delete(flag)
+    db.session.commit()
+    flash('Campaign unflagged successfully')
+    return redirect(url_for('admin_dashboard'))

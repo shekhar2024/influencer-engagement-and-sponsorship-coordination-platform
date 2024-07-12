@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    {% include 'searchbar.html' with context %}
+    <hr>
+    <h1 class="display-2">Users</h1>
+    <div class="user-list">
+        {% for user in users %}
+        {% if not user.is_admin %}
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">{{user.username}}</h5>
+              <p class="card-text">
+                Name : {{user.name}}
+                <br>
+                {% if user.is_sponsor %}
+                Industry : {{user.industry}}
+                <br>
+                Budget : {{user.budget}}
+                <br>
+                Roll : Sponsor
+                {% else %}
+                Category : {{user.category}}
+                <br>
+                Niche : {{user.niche}}
+                <br>
+                Reach : {{user.reach}}
+                <br>
+                Roll : Influencer
+                {% endif %}
+              </p>
+              {% if user.flag %}
+              <a href="{{url_for('unflag_user', id=user.id)}}" class="btn btn-success">Unflag</a>
+              {% else %}
+              <a href="{{url_for('flag_user', id=user.id)}}" class="btn btn-danger">Flag</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+    </div>
+
+{% endblock %}
+{% block style %}
+    <style>
+        .user-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .card {
+            margin: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+    
+{% endblock %}

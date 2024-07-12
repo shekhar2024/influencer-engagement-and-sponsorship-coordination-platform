@@ -35,9 +35,9 @@ class Campaign(db.Model):
     status = db.Column(db.String(30),nullable=False,default='pending')
     sponsor_id = db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
 
-    ad_requests_bysponsor = db.relationship('Ad_Request_bysponsor',backref='campaign',lazy=True)
-    ad_requests_byinfluencer = db.relationship('Ad_Request_byinfluencer',backref='campaign',lazy=True)
-    flag = db.relationship('Flagged_Campaign',backref='flagged_campaign',uselist=False)
+    ad_requests_bysponsor = db.relationship('Ad_Request_bysponsor',backref='campaign',lazy=True, cascade='all, delete-orphan')
+    ad_requests_byinfluencer = db.relationship('Ad_Request_byinfluencer',backref='campaign',lazy=True, cascade='all, delete-orphan')
+    flag = db.relationship('Flagged_Campaign',backref='flagged_campaign',uselist=False, cascade='all, delete-orphan')
 
 class Ad_Request_bysponsor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
