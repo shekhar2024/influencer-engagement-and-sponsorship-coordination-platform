@@ -170,9 +170,10 @@ def index():
     user = User.query.get(session['user_id'])
     if user.is_sponsor:
         return redirect(url_for('sponsor'))
-    if user.is_admin:
+    elif user.is_admin:
         return redirect(url_for('admin_dashboard'))
-    return render_template('index.html')
+    else:
+        return render_template('index.html')
 
 @app.route('/sponsor_profile')
 @sponsor_required
@@ -351,11 +352,10 @@ def add_campaign_post():
         flash('Budget cannot be negative')
         return redirect(url_for('add_campaign'))
 
-    if start_date < datetime.now():
-        flash('Start date cannot be before today')
 
     if start_date > end_date:
         flash('End date cannot be before start date')
+        return redirect(url_for('add_campaign'))
 
     new_campaign = Campaign(title=title, description=description, start_date=start_date, end_date=end_date, budget=budget, category=category, visibility=visibility, sponsor_id=session['user_id'])
     db.session.add(new_campaign)
@@ -409,9 +409,7 @@ def edit_campaign_post(id):
     if budget < 0:
         flash('Budget cannot be negative')
         return redirect(url_for('edit_campaign', id=id))
-    if start_date < datetime.now():
-        flash('Start date cannot be before today')
-        return redirect(url_for('edit_campaign', id=id))
+
     if start_date > end_date:
         flash('End date cannot be before start date')
         return redirect(url_for('edit_campaign', id=id))
@@ -626,6 +624,30 @@ def delete_request_sponsor_post(request_id):
 @admin_required
 def find_users():
     users = User.query.all()
+    parameter = request.args.get('parameter')
+    query = request.args.get('query')
+    if parameter == 'username':
+        users = User.query.filter(User.username.ilike(f'%{query}%')).all()
+        return render_template('admin/find_users.html', users=users)
+    if parameter == 'name':
+        users = User.query.filter(User.name.ilike(f'%{query}%')).all()
+        return render_template('admin/find_users.html', users=users)
+    if parameter == 'industry':
+        users = User.query.filter(User.industry.ilike(f'%{query}%')).all()
+        return render_template('admin/find_users.html', users=users)
+    if parameter == 'category':
+        users = User.query.filter(User.category.ilike(f'%{query}%')).all()
+        return render_template('admin/find_users.html', users=users)
+    if parameter == 'niche':
+        users = User.query.filter(User.niche.ilike(f'%{query}%')).all()
+        return render_template('admin/find_users.html', users=users)
+    if parameter == 'min_reach':
+        query = int(query)
+        users = User.query.filter(User.reach > query).all()
+        return render_template('admin/find_users.html', users=users)
+    if parameter == 'roll':
+        users = User.query.filter(User.is_sponsor==True).all()
+        return render_template('admin/find_users.html', users=users)
     return render_template('admin/find_users.html', users=users)
 
 @app.route('/flag_user/<int:id>')
@@ -667,6 +689,18 @@ def unflag_user(id):
 @admin_required
 def find_campaigns():
     campaigns = Campaign.query.all()
+    parameter = request.args.get('parameter')
+    query = request.args.get('query')
+    if parameter == 'title':
+        campaigns = Campaign.query.filter(Campaign.title.ilike(f'%{query}%')).all()
+        return render_template('admin/find_campaigns.html', campaigns=campaigns)
+    if parameter == 'category':
+        campaigns = Campaign.query.filter(Campaign.category.ilike(f'%{query}%')).all()
+        return render_template('admin/find_campaigns.html', campaigns=campaigns)
+    if parameter == 'min_budget':
+        query = int(query)
+        campaigns = Campaign.query.filter(Campaign.budget > query).all()
+        return render_template('admin/find_campaigns.html', campaigns=campaigns)
     return render_template('admin/find_campaigns.html', campaigns=campaigns)
 
 @app.route('/flag_campaign/<int:id>')
@@ -741,3 +775,5 @@ def unflag_campaign_dashboard(id):
     db.session.commit()
     flash('Campaign unflagged successfully')
     return redirect(url_for('admin_dashboard'))
+
+

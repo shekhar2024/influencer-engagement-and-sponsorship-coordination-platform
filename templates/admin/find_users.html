@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    {% include 'searchbar.html' with context %}
+    {% include 'user_searchbar.html' with context %}
     <hr>
     <h1 class="display-2">Users</h1>
     <div class="user-list">
@@ -16,7 +16,7 @@
                 {% if user.is_sponsor %}
                 Industry : {{user.industry}}
                 <br>
-                Budget : {{user.budget}}
+                Budget : &#8377;{{user.budget}}
                 <br>
                 Roll : Sponsor
                 {% else %}

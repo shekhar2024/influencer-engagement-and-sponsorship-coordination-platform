@@ -29,22 +29,22 @@
             <div class="card-body">
               <h5 class="card-title">{{flag.flagged_user.username}}</h5>
               <p class="card-text">
-                Name : {{flag.flagged_user.name}}
+                <strong>Name : </strong>{{flag.flagged_user.name}}
                 <br>
                 {% if flag.flagged_user.is_sponsor %}
-                Industry : {{flag.flagged_user.industry}}
+                <strong>Industry : </strong>{{flag.flagged_user.industry}}
                 <br>
-                Budget : {{flag.flagged_user.budget}}
+                <strong>Budget : </strong>&#8377;{{flag.flagged_user.budget}}
                 <br>
-                Roll : Sponsor
+                <strong>Roll : </strong>Sponsor
                 {% else %}
-                Category : {{flag.flagged_user.category}}
+                <strong>Category : </strong>{{flag.flagged_user.category}}
                 <br>
-                Niche : {{flag.flagged_user.niche}}
+                <strong>Niche : </strong>{{flag.flagged_user.niche}}
                 <br>
-                Reach : {{flag.flagged_user.reach}}
+                <strong>Reach : </strong>{{flag.flagged_user.reach}}
                 <br>
-                Roll : Influencer
+                <strong>Roll : </strong>Influencer
                 {% endif %}
               </p>
               <a href="{{url_for('unflag_user_dashboard', id=flag.id)}}" class="btn btn-success">Unflag</a>
@@ -60,17 +60,17 @@
             <div class="card-body">
               <h5 class="card-title">{{flag.flagged_campaign.title}}</h5>
               <p class="card-text">
-                Category : {{flag.flagged_campaign.category}}
+                <strong>Category : </strong>{{flag.flagged_campaign.category}}
                 <br>
-                Start Date : {{flag.flagged_campaign.start_date}}
+                <strong>Start Date : </strong>{{flag.flagged_campaign.start_date}}
                 <br>
-                End Date : {{flag.flagged_campaign.end_date}}
+                <strong>End Date : </strong>{{flag.flagged_campaign.end_date}}
                 <br>
-                Sponsor : {{flag.flagged_campaign.sponsor.username}}
+                <strong>Sponsor : </strong>{{flag.flagged_campaign.sponsor.username}}
                 <br>
-                Status : {{flag.flagged_campaign.status}}
+                <strong>Status : </strong>{{flag.flagged_campaign.status}}
                 <br>
-                Visibility : {{flag.flagged_campaign.visibility}}
+                <strong>Visibility : </strong>{{flag.flagged_campaign.visibility}}
               </p>
                 <a href="{{url_for('view_campaign', id=flag.campaign_id)}}" class="btn btn-primary">
                      <i class="fa fa-search" ></i>
