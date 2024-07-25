@@ -469,6 +469,10 @@ def recieved_requests_sponsor(id):
 @app.route('/campaign/<int:campaign_id>/request/add')
 @sponsor_required
 def add_request_sponsor(campaign_id):
+    campaign = Campaign.query.get(campaign_id)
+    if not campaign:
+        flash('Campaign does not exist')
+        return redirect(url_for('campaigns'))
     campaigns = Campaign.query.filter_by(sponsor_id=session['user_id']).all()
     influencers = User.query.filter_by(is_influencer=True).all()
     campaign = Campaign.query.get(campaign_id)
@@ -481,6 +485,10 @@ def add_request_sponsor(campaign_id):
 @app.route('/campaign/<int:campaign_id>/request/add', methods=['POST'])
 @sponsor_required
 def add_request_sponsor_post(campaign_id):
+    campaign = Campaign.query.get(campaign_id)
+    if not campaign:
+        flash('Campaign does not exist')
+        return redirect(url_for('campaigns'))
     camp_id = request.form.get('campaign_id')
     influencer_id = request.form.get('influencer_id')
     payment = request.form.get('payment')
@@ -617,6 +625,87 @@ def delete_request_sponsor_post(request_id):
     db.session.commit()
     flash('Request deleted successfully')
     return redirect(url_for('sent_requests_sponsor', id=campaign_id))
+
+@app.route('/find_influencers')
+@sponsor_required
+def find_influencers():
+    influencers = User.query.filter_by(is_influencer=True).all()
+    parameter = request.args.get('parameter')
+    query = request.args.get('query')
+    if parameter == 'username':
+        influencers = User.query.filter(User.username.ilike(f'%{query}%')).all()
+        return render_template('find_influencers.html', influencers=influencers)
+    if parameter == 'name':
+        influencers = User.query.filter(User.name.ilike(f'%{query}%')).all()
+        return render_template('find_influencers.html', influencers=influencers)
+    if parameter == 'category':
+        influencers = User.query.filter(User.category.ilike(f'%{query}%')).all()
+        return render_template('find_influencers.html', influencers=influencers)
+    if parameter == 'niche':
+        influencers = User.query.filter(User.niche.ilike(f'%{query}%')).all()
+        return render_template('find_influencers.html', influencers=influencers)
+    if parameter == 'min_reach':
+        query = int(query)
+        influencers = User.query.filter(User.reach > query).all()
+        return render_template('find_influencers.html', influencers=influencers)
+    return render_template('find_influencers.html', influencers=influencers)
+
+@app.route('/find_influenecrs/<int:id>/request')
+@sponsor_required
+def request_influencer(id):
+    influencers = User.query.filter_by(is_influencer=True).all()
+    influencer = User.query.get(id)
+    if not influencer:
+        flash('Influencer does not exist')
+        return redirect(url_for('find_influencers'))
+    campaigns = Campaign.query.filter_by(sponsor_id=session['user_id']).all()
+    return render_template('campaign/request_influencer.html', influencer=influencer, campaigns=campaigns, influencers=influencers)
+
+@app.route('/find_influenecrs/<int:id>/request', methods=['POST'])
+@sponsor_required
+def request_influencer_post(id):
+    influencer = User.query.get(id)
+    if not influencer:
+        flash('Influencer does not exist')
+        return redirect(url_for('find_influencers'))
+    camp_id = request.form.get('campaign_id')
+    payment = request.form.get('payment')
+    requirements = request.form.get('requirements')
+    influencer_id = request.form.get('influencer_id')
+
+    campaign = Campaign.query.get(camp_id)
+    influencer = User.query.get(influencer_id)
+
+    if not campaign:
+        flash('Campaign does not exist')
+        return redirect(url_for('find_influencers'))
+    
+    if not influencer:
+        flash('Influencer does not exist')
+        return redirect(url_for('find_influencers'))
+
+    campaign_name = campaign.title
+    influencer_username = influencer.username
+
+    if not payment or not requirements:
+        flash('Please fill out all the required fields')
+        return redirect(url_for('request_influencer', id=influencer_id))
+
+    try:
+        payment = float(payment)
+    except ValueError:
+        flash('Invalid payment amount')
+        return redirect(url_for('request_influencer', id=influencer_id))
+
+    if payment < 0:
+        flash('Payment cannot be negative')
+        return redirect(url_for('request_influencer', id=influencer_id))
+
+    new_request = Ad_Request_bysponsor(influencer_name=influencer_username, influencer_id=influencer_id, campaign_title=campaign_name, campaign_id=camp_id, payment=payment, requirements=requirements)
+    db.session.add(new_request)
+    db.session.commit()
+    flash('Request sent successfully')
+    return redirect(url_for('find_influencers'))
 
 #-----Admin Pages-----#
 

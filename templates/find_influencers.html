@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    {% include 'influencer_searchbar.html' with context %}
+    <hr>
+    <h1 class="display-2">Influencers</h1>
+    <div class="influencer-list">
+        {% for influencer in influencers %}
+        {% if not influencer.is_admin %}
+        {% if influencer.is_influencer %}
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">{{influencer.username}}</h5>
+              <p class="card-text">
+                Name : {{influencer.name}}
+                <br>
+                Category : {{influencer.category}}
+                <br>
+                Niche : {{influencer.niche}}
+                <br>
+                Reach : {{influencer.reach}}
+              </p>
+              <a href="{{url_for('request_influencer', id=influencer.id)}}" class="btn btn-success">
+                <i class="fas fa-paper-plane" ></i>
+                Send Ad Request
+            </a>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+
+    </div>
+
+{% endblock %}
+{% block style %}
+    <style>
+        .influencer-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .card {
+            margin: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+    
+{% endblock %}
