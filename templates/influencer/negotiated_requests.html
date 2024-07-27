@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+
+    Requests in Negotiations
+
+{% endblock %}
+
+{% block content %}
+    <h1 class="display-2">Requests in Negotiations</h1>
+    <div class="request-list">
+        {% for request in requests %}
+        {% if request.status == 'In Negotiation' or request.status == 'Negotiated' or request.status == 'Negotiation Rejected' %}
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">{{request.campaign_title}}</h5>
+              <p class="card-text">
+                Requirements : {{request.requirements}}
+                <br>
+                Payment : {{request.payment}}
+                <br>
+                {% if request.status == 'In Negotiation' %}
+                Status : In Negotiation
+                {% elif request.status == 'Negotiated' %}
+                Status : Accepted
+                {% elif request.status == 'Negotiation Rejected' %}
+                Status : Rejected
+                {% endif %}
+              </p>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+    </div>
+
+{% endblock %}
+{% block style %}
+    <style>
+        .request-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .card {
+            margin: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+    
+{% endblock %}

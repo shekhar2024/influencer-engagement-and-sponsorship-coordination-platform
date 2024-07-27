@@ -2,13 +2,13 @@
 
 {% block title %}
 
-    Campaigns
+    Pending Campaigns
 
 {% endblock %}
 
 {% block content %}
 
-    <h1 class="display-2">Campaigns</h1>
+    <h1 class="display-2">Pending Campaigns</h1>
     <a href="{{url_for('add_campaign')}}" class="btn btn-success">
         <i class="fas fa-plus    "></i>
         Add</a>
@@ -26,6 +26,7 @@
         </thead>
         <tbody>
             {% for campaign in campaigns %}
+            {% if campaign.status == 'pending' %}
             <tr>
                 <td>{{campaign.id}}</td>
                 <td>{{campaign.title}}</td>
@@ -38,7 +39,13 @@
                 <td>
                     <a href="{{url_for('recieved_requests_sponsor', id=campaign.id)}}" class="btn btn-primary">
                         <i class="fas fa-envelope   "></i>
-                        {{campaign.adrequests_byinfluencer|length}}
+                        {% set ns = namespace(count=0) %}
+                        {% for request in campaign.ad_requests_byinfluencer %}
+                            {% if request.status == 'pending' %}
+                                {% set ns.count = ns.count + 1 %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ns.count}}    
                     </a>
                 </td>
                 <td>
@@ -55,10 +62,9 @@
                         Delete
                     </a>
                 </td>
-                <td>{{campaign.status}}</td>
-                
-                
+                <td>{{campaign.status}}</td>                
             </tr>
+            {% endif %}
             {% endfor %}
     </table>
         

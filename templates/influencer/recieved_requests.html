@@ -1,0 +1,60 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+
+    Recieved Requests
+
+{% endblock %}
+
+{% block content %}
+    <h1 class="display-2">Recieved Requests</h1>
+    <div class="request-list">
+        {% for request in requests %}
+        {% if request.status == 'pending' %}
+        {% if request.campaign.status == 'pending' %}
+        <div class="card" style="width: 22rem;">
+            <div class="card-body">
+              <h5 class="card-title">{{request.campaign_title}}</h5>
+              <p class="card-text">
+                Requirements : {{request.requirements}}
+                <br>
+                Payment : {{request.payment}}
+              </p>
+              <a href="{{url_for('accept_request_influencer', request_id=request.id)}}" class="btn btn-success">
+                <i class="fa-sharp fa-solid fa-check" ></i>
+                Accept
+            </a>
+            <a href="{{url_for('reject_request_influencer', request_id=request.id)}}" class="btn btn-danger">
+                <i class="fa-solid fa-xmark"></i>
+                Reject
+            </a>
+            <a href="{{url_for('negotiate_request_influencer', request_id=request.id)}}" class="btn btn-primary">
+                <i class="fa-solid fa-handshake"></i>
+                Negotiate
+            </a>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+
+    </div>
+
+{% endblock %}
+{% block style %}
+    <style>
+        .request-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .card {
+            margin: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+    
+{% endblock %}

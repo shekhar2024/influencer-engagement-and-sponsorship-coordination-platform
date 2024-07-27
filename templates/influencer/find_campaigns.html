@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    {% include 'campaign_searchbar.html' with context %}
+    <hr>
+    <h1 class="display-2">Campaigns</h1>
+    <div class="campaign-list">
+        {% for campaign in campaigns %}
+        {% if campaign.status == 'pending' %}
+        {% if campaign.visibility == 'Public' %}
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">{{campaign.title}}</h5>
+              <p class="card-text">
+                Category : {{campaign.category}}
+                <br>
+                Start Date : {{campaign.start_date}}
+                <br>
+                End Date : {{campaign.end_date}}
+                <br>
+                Budget : &#8377;{{campaign.budget}}
+              </p>
+                <a href="{{url_for('view_campaign', id=campaign.id)}}" class="btn btn-primary">
+                     <i class="fa fa-search" ></i>
+                        View
+                </a>
+                <a href="{{url_for('request_campaign', id=campaign.id)}}" class="btn btn-success">
+                    <i class="fa fa-paper-plane" ></i>
+                    Request</a>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+
+    </div>
+
+{% endblock %}
+{% block style %}
+    <style>
+        .campaign-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .card {
+            margin: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+    
+{% endblock %}

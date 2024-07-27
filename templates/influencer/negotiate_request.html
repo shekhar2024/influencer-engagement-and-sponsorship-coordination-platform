@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+
+    Negotiate Request
+
+{% endblock %}
+
+{% block content %}
+
+    <h1 class="display-2">Negotiate Request</h1>
+    <h1 class="display-5">{{campaign.title}}</h1>
+
+    <form action="" method="post" class="form">
+        
+        <div class="form-group">
+            <label for="requirements" class="form-label">Requirements</label>
+            <input type="text" name="requirements" id="requirements" class="form-control" value="{{request.requirements}}">
+        </div>
+        <div class="form-group">
+            <label for="payment" class="form-label">Payment</label>
+            <input type="number" name="payment" id="payment" min="0" class="form-control" value="{{request.payment}}" required>
+        </div>
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-paper-plane    "></i>
+            Send
+        </button>
+    </form>
+
+{% endblock %}

@@ -27,6 +27,15 @@
             <li class="nav-item">
               <a class="nav-link" href="{{url_for('influencer_profile')}}">Profile</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{url_for('recieved_requests_influencer')}}">Recieved Requests</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{url_for('negotiated_requests_influencer')}}">Requests In Negotiations</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{url_for('find_campaigns_influencer')}}">Find Campaigns</a>
+            </li>
             {% else %}
             <li class="nav-item">
               <a class="nav-link" href="{{url_for('index')}}">Dashboard</a>
