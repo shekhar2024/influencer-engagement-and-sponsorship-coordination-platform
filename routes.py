@@ -1091,4 +1091,91 @@ def negotiated_requests_influencer():
     influencer = User.query.get(session['user_id'])
     requests = influencer.ad_requests_bysponsor
     return render_template('influencer/negotiated_requests.html', requests=requests)
+
+@app.route('/influencer/sent_requests')
+@influencer_required
+def sent_requests_influencer():
+    influencer = User.query.get(session['user_id'])
+    requests = influencer.ad_requests_byinfluencer
+    return render_template('influencer/sent_requests.html', requests=requests)
+
+@app.route('/influencer/<int:request_id>/edit')
+@influencer_required
+def edit_request_influencer(request_id):
+    request = Ad_Request_byinfluencer.query.get(request_id)
+    if not request:
+        flash('Request does not exist')
+        return redirect(url_for('sent_requests_influencer'))
+
+    if not request.status == 'pending':
+        flash('Request is already accepted or rejected')
+        return redirect(url_for('sent_requests_influencer'))
+        
+    return render_template('influencer/edit_request.html', request=request)
+
+@app.route('/influencer/<int:request_id>/edit', methods=['POST'])
+@influencer_required
+def edit_request_influencer_post(request_id):
+    req = Ad_Request_byinfluencer.query.get(request_id)
+    if not req:
+        flash('Request does not exist')
+        return redirect(url_for('sent_requests_influencer'))
+
+    if not req.status == 'pending':
+        flash('Request is already accepted or rejected')
+        return redirect(url_for('sent_requests_influencer'))
+
+    payment = request.form.get('payment')
+    requirements = request.form.get('requirements')
+
+    if not payment or not requirements:
+        flash('Please fill out all the required fields')
+        return redirect(url_for('edit_request_influencer', request_id=request_id))
+    
+    try:
+        payment = float(payment)
+    except ValueError:
+        flash('Invalid payment amount')
+        return redirect(url_for('edit_request_influencer', request_id=request_id))
+
+    if payment < 0:
+        flash('Payment cannot be negative')
+        return redirect(url_for('edit_request_influencer', request_id=request_id))
+
+    req.payment = payment
+    req.requirements = requirements
+    db.session.commit()
+    return redirect(url_for('sent_requests_influencer'))
+
+@app.route('/influencer/<int:request_id>/delete')
+@influencer_required
+def delete_request_influencer(request_id):
+    request = Ad_Request_byinfluencer.query.get(request_id)
+    if not request:
+        flash('Request does not exist')
+        return redirect(url_for('sent_requests_influencer'))
+
+    if not request.status == 'pending':
+        flash('Request is already accepted or rejected')
+        return redirect(url_for('sent_requests_influencer'))
+
+    return render_template('influencer/delete_request.html', request=request)
+
+@app.route('/influencer/<int:request_id>/delete', methods=['POST'])
+@influencer_required
+def delete_request_influencer_post(request_id):
+    request = Ad_Request_byinfluencer.query.get(request_id)
+    if not request:
+        flash('Request does not exist')
+        return redirect(url_for('sent_requests_influencer'))
+
+    if not request.status == 'pending':
+        flash('Request is already accepted or rejected')
+        return redirect(url_for('sent_requests_influencer'))
+
+    db.session.delete(request)
+    db.session.commit()
+    flash('Request deleted successfully')
+    return redirect(url_for('sent_requests_influencer'))
+    
     

@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+
+    Sent Requests
+
+{% endblock %}
+
+{% block content %}
+    <h1 class="display-2">Sent Requests</h1>
+    <div class="request-list">
+        {% for request in requests %}
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">{{request.campaign_title}}</h5>
+              <p class="card-text">
+                Requirements : {{request.requirements}}
+                <br>
+                Payment : {{request.payment}}
+              </p>
+              <a href="{{url_for('edit_request_influencer', request_id=request.id)}}" class="btn btn-primary">
+                <i class="fas fa-edit" ></i>
+                Edit
+            </a>
+            <a href="{{url_for('delete_request_influencer', request_id=request.id)}}" class="btn btn-danger">
+                <i class="fas fa-trash"></i>
+                Delete
+            </a>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+{% endblock %}
+{% block style %}
+    <style>
+        .request-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .card {
+            margin: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+    
+{% endblock %}

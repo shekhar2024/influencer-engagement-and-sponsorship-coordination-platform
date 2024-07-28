@@ -14,9 +14,9 @@
               <p class="card-text">
                 Category : {{campaign.category}}
                 <br>
-                Start Date : {{campaign.start_date}}
+                Start Date : {{(campaign.start_date|string)[:10]}}
                 <br>
-                End Date : {{campaign.end_date}}
+                End Date : {{(campaign.end_date|string)[:10]}}
                 <br>
                 Budget : &#8377;{{campaign.budget}}
               </p>
