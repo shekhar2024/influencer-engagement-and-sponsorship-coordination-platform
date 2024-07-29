@@ -3,9 +3,143 @@
 {% block title %}
 
     Sponsor Dashboard
-    
+
 {% endblock %}
 
 {% block content %}
-    <h1 class="display-1">Sponsor Dashboard</h1>
+
+    <h1 class="display-1">Welcome {{sponsor.username}}</h1>
+    <h1 class="display-4">Active Campaigns</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Campaign id</th>
+                <th>Campaign Name</th>
+                <th>Influencer Username</th>
+                <th>Actions</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for campaign in campaigns %}
+            {% if campaign.status == 'Active' or campaign.status == 'Completed' %}
+            <tr>
+                <td>{{campaign.id}}</td>
+                <td>{{campaign.title}}</td>
+                <td>{% for request in campaign.ad_requests_bysponsor %}
+                    {% if request.status == 'Accepted' or request.status =='Negotiated' %}
+                    {{request.influencer_name}}
+                    {% endif %}
+                    {% endfor %}
+                    {% for request in campaign.ad_requests_byinfluencer %}
+                    {% if request.status == 'Accepted' %}
+                    {{request.influencer_name}}
+                    {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    <a href="{{url_for('view_campaign', id=campaign.id)}}" class="btn btn-primary">
+                        <i class="fas fa-search    "></i>
+                        View
+                    </a>
+                </td>
+                <td>{{campaign.status}}</td>                
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h1 class="display-4">Requests For Negotiation</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Request ID</th>
+                <th>Campaign Name</th>
+                <th>Influencer Username</th>
+                <th>New Ask</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for campaign in campaigns %}
+            {% if campaign.status == 'pending' %}
+            {% for request in campaign.ad_requests_bysponsor %}
+            {% if request.status == 'In Negotiation' %}
+            
+            <tr>
+                <td>{{request.id}}</td>
+                <td>{{request.campaign_title}}</td>
+                <td>{{request.influencer_name}}</td>
+                <td>{{request.payment}}</td>
+                <td>
+                    <a href="{{url_for('view_request_sponsor', request_id=request.id)}}" class="btn btn-primary">
+                        <i class="fas fa-search"></i>
+                        View
+                    </a>
+                    <a href="{{url_for('accept_negotiated_request_sponsor', request_id=request.id)}}" class="btn btn-success">
+                        <i class="fa-sharp fa-solid fa-check" ></i>
+                        Accept
+                    </a>
+                    <a href="{{url_for('reject_negotiated_request_sponsor', request_id=request.id)}}" class="btn btn-danger">
+                        <i class="fa-solid fa-xmark"></i>
+                        Reject
+                    </a>    
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+        
+    <h1 class="display-4">New Requests</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Request ID</th>
+                <th>Campaign Name</th>
+                <th>Influencer Username</th>
+                <th>Payment</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for campaign in campaigns %}
+            {% if campaign.status == 'pending' %}
+            {% for request in campaign.ad_requests_byinfluencer %}
+            {% if request.status == 'pending' %}
+            
+            <tr>
+                <td>{{request.id}}</td>
+                <td>{{request.campaign_title}}</td>
+                <td>{{request.influencer_name}}</td>
+                <td>{{request.payment}}</td>
+                <td>
+                    <a href="{{url_for('view_request_sponsor', request_id=request.id)}}" class="btn btn-primary">
+                        <i class="fas fa-search"></i>
+                        View
+                    </a>
+                    <a href="{{url_for('accept_new_request_sponsor', request_id=request.id)}}" class="btn btn-success">
+                        <i class="fa-sharp fa-solid fa-check" ></i>
+                        Accept
+                    </a>
+                    <a href="{{url_for('reject_new_request_sponsor', request_id=request.id)}}" class="btn btn-danger">
+                        <i class="fa-solid fa-xmark"></i>
+                        Reject
+                    </a>    
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    
 {% endblock %}

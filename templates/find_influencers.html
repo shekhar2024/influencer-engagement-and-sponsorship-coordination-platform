@@ -12,13 +12,13 @@
             <div class="card-body">
               <h5 class="card-title">{{influencer.username}}</h5>
               <p class="card-text">
-                Name : {{influencer.name}}
+                <strong>Name : </strong>{{influencer.name}}
                 <br>
-                Category : {{influencer.category}}
+                <strong>Category : </strong>{{influencer.category}}
                 <br>
-                Niche : {{influencer.niche}}
+                <strong>Niche : </strong>{{influencer.niche}}
                 <br>
-                Reach : {{influencer.reach}}
+                <strong>Reach : </strong>{{influencer.reach}}
               </p>
               <a href="{{url_for('request_influencer', id=influencer.id)}}" class="btn btn-success">
                 <i class="fas fa-paper-plane" ></i>

@@ -310,7 +310,10 @@ def logout():
 @app.route('/sponsor')
 @sponsor_required
 def sponsor():
-    return render_template('sponsor.html')
+    sponsor = User.query.get(session['user_id'])
+    campaigns = Campaign.query.filter_by(sponsor_id=session['user_id']).all()
+    
+    return render_template('sponsor.html', sponsor=sponsor, campaigns=campaigns)
 
 @app.route('/campaign')
 @sponsor_required
@@ -482,6 +485,22 @@ def accept_request_sponsor(request_id):
         db.session.commit()
     return redirect(url_for('campaigns'))
 
+@app.route('/campaign/accept_new_request/<int:request_id>', methods=['GET','POST'])
+@sponsor_required
+def accept_new_request_sponsor(request_id):
+    request = Ad_Request_byinfluencer.query.get(request_id)
+    if not request:
+        flash('Request does not exist')
+        return redirect(url_for('sponsor'))
+    if not request.campaign.status == 'pending':
+        flash('This campaign is either active or completed')
+        return redirect(url_for('sponsor'))
+    if request.status == 'pending':
+        request.status = 'Accepted'
+        request.campaign.status = 'Active'
+        db.session.commit()
+    return redirect(url_for('sponsor'))
+
 @app.route('/campaign/accept_negotiated_request/<int:request_id>', methods=['GET','POST'])
 @sponsor_required
 def accept_negotiated_request_sponsor(request_id):
@@ -501,6 +520,25 @@ def accept_negotiated_request_sponsor(request_id):
     db.session.commit()
     return redirect(url_for('campaigns'))
 
+@app.route('/campaign/accept_negotiated_request_dashboard/<int:request_id>', methods=['GET','POST'])
+@sponsor_required
+def accept_negotiated_request_dashboard(request_id):
+    request = Ad_Request_bysponsor.query.get(request_id)
+    if not request:
+        flash('Request does not exist')
+        return redirect(url_for('sponsor'))
+    if not request.campaign.status == 'pending':
+        flash('This campaign is either active or completed')
+        return redirect(url_for('sponsor'))
+    if not request.status == 'In Negotiation':
+        flash('This request is not in negotiation')
+        return redirect(url_for('sponsor'))
+
+    request.status = 'Negotiated'
+    request.campaign.status = 'Active'
+    db.session.commit()
+    return redirect(url_for('sponsor'))
+
 @app.route('/campaign/reject_negotiated_request/<int:request_id>', methods=['GET','POST'])
 @sponsor_required
 def reject_negotiated_request_sponsor(request_id):
@@ -519,6 +557,24 @@ def reject_negotiated_request_sponsor(request_id):
     db.session.commit()
     return redirect(url_for('campaigns'))
 
+@app.route('/campaign/reject_negotiated_request_dashboard/<int:request_id>', methods=['GET','POST'])
+@sponsor_required
+def reject_negotiated_request_dashboard(request_id):
+    request = Ad_Request_bysponsor.query.get(request_id)
+    if not request:
+        flash('Request does not exist')
+        return redirect(url_for('sponsor'))
+    if not request.campaign.status == 'pending':
+        flash('This campaign is either active or completed')
+        return redirect(url_for('sponsor'))
+    if not request.status == 'In Negotiation':
+        flash('This request is not in negotiation')
+        return redirect(url_for('sponsor'))
+
+    request.status = 'Negotiation Rejected'
+    db.session.commit()
+    return redirect(url_for('sponsor'))
+
 @app.route('/campaign/reject_request/<int:request_id>', methods=['GET','POST'])
 @sponsor_required
 def reject_request_sponsor(request_id):
@@ -530,6 +586,18 @@ def reject_request_sponsor(request_id):
         request.status = 'Rejected'
         db.session.commit()
     return redirect(url_for('recieved_requests_sponsor', id=request.campaign_id))
+
+@app.route('/campaign/reject_new_request/<int:request_id>', methods=['GET','POST'])
+@sponsor_required
+def reject_new_request_sponsor(request_id):
+    request = Ad_Request_byinfluencer.query.get(request_id)
+    if not request:
+        flash('Request does not exist')
+        return redirect(url_for('sponsor'))
+    if request.status == 'pending':
+        request.status = 'Rejected'
+        db.session.commit()
+    return redirect(url_for('sponsor', id=request.campaign_id))
 
 @app.route('/campaign/<int:campaign_id>/request/add')
 @sponsor_required
@@ -902,8 +970,8 @@ def admin_dashboard():
     campaigns = Campaign.query.all()
     request_sponsor = Ad_Request_bysponsor.query.all()
     request_influencer = Ad_Request_byinfluencer.query.all()
-    request_accepted_sponsor = Ad_Request_byinfluencer.query.filter_by(status='accepted').all()
-    request_accepted_influencer = Ad_Request_bysponsor.query.filter_by(status='accepted').all()
+    request_accepted_sponsor = Ad_Request_byinfluencer.query.filter_by(status='Accepted').count()
+    request_accepted_influencer = Ad_Request_bysponsor.query.filter_by(status='Accepted').count()
     return render_template('admin/admin_dashboard.html', flagged_users=flagged_users, flagged_campaigns=flagged_campaigns, sponsors=sponsors, influencers=influencers, campaigns=campaigns, request_sponsor=request_sponsor, request_influencer=request_influencer, request_accepted_sponsor=request_accepted_sponsor, request_accepted_influencer=request_accepted_influencer)
 
 @app.route('/admin_dashboard/unflag_user/<int:id>')
@@ -1054,6 +1122,7 @@ def negotiate_request_influencer(request_id):
 @app.route('/influencer/negotiate_request/<int:request_id>', methods=['POST'])
 @influencer_required
 def negotiate_request_influencer_post(request_id):
+    user = User.query.get(session['user_id'])
     req = Ad_Request_bysponsor.query.get(request_id)
     if not req:
         flash('Request does not exist')
@@ -1083,6 +1152,7 @@ def negotiate_request_influencer_post(request_id):
     req.requirements = requirements
     req.status = 'In Negotiation'
     db.session.commit()
+    
     return redirect(url_for('recieved_requests_influencer'))
 
 @app.route('/influencer/negotiated_requests')
