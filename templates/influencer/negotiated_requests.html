@@ -11,24 +11,26 @@
     <div class="request-list">
         {% for request in requests %}
         {% if request.status == 'In Negotiation' or request.status == 'Negotiated' or request.status == 'Negotiation Rejected' %}
+        {% if not request.campaign.sponsor.flag or not request.status == 'In Negotiation' %}
         <div class="card" style="width: 18rem;">
             <div class="card-body">
               <h5 class="card-title">{{request.campaign_title}}</h5>
               <p class="card-text">
-                Requirements : {{request.requirements}}
+                <strong>Requirements : </strong>{{request.requirements}}
                 <br>
-                Payment : {{request.payment}}
+                <strong>Payment : </strong>{{request.payment}}
                 <br>
                 {% if request.status == 'In Negotiation' %}
-                Status : In Negotiation
+                <strong>Status : </strong>In Negotiation
                 {% elif request.status == 'Negotiated' %}
-                Status : Accepted
+                <strong>Status : </strong>Accepted
                 {% elif request.status == 'Negotiation Rejected' %}
-                Status : Rejected
+                <strong>Status : </strong>Rejected
                 {% endif %}
               </p>
             </div>
         </div>
+        {% endif %}
         {% endif %}
         {% endfor %}
 

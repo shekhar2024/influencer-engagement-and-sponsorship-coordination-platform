@@ -6,6 +6,7 @@
     <h1 class="display-2">Influencers</h1>
     <div class="influencer-list">
         {% for influencer in influencers %}
+        {% if not influencer.flag %}
         {% if not influencer.is_admin %}
         {% if influencer.is_influencer %}
         <div class="card" style="width: 18rem;">
@@ -28,6 +29,7 @@
         </div>
         {% endif %}
         {% endif %}
+        {% endif %}
         {% endfor %}
 
     </div>
@@ -43,6 +45,7 @@
 
         .card {
             margin: 10px;
+        
         }
     </style>
 {% endblock %}

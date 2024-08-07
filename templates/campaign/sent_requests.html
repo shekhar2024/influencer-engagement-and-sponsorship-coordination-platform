@@ -27,6 +27,7 @@
         </thead>
         <tbody>
             {% for request in requests %}
+            {% if not request.influencer.flag %}
             <tr>
                 <td>{{request.id}}</td>
                 <td>{{request.influencer_name}}</td>
@@ -59,6 +60,7 @@
                 </td>
                 <td>{{request.status}}</td>
             </tr>
+            {% endif %}
             {% endfor %}
 
         </tbody>

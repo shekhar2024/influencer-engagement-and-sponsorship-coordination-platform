@@ -1,0 +1,141 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+
+    Influencer Dashboard
+
+{% endblock %}
+
+{% block content %}
+
+    <h1 class="display-1">Welcome {{influencer.username}}</h1>
+
+    <div class="container my-5">
+        <div class="cards-list">
+        
+            <div class="col-md-4">
+                <div class="card card-button" onclick="window.location.href='/influencer/new_requests'">
+                    <div class="card-body">
+                        <h2 class="card-title">{{y}}</h2>
+                        <h3 class="card-text">New Requests</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card card-button" onclick="window.location.href='/influencer/completed_requests'">
+                    <div class="card-body">
+                        <h2 class="card-title">{{a}}</h2>
+                        <h3 class="card-text">Completed Requests</h3>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {% if x == 0 %}
+    <h1 class="display-4">No Active Campaigns</h1>
+    {% else %}
+    <h1 class="display-4">Active Campaigns</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Campaign id</th>
+                <th>Campaign Name</th>
+                <th>Actions</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in requests_1 %}
+            {% if request.status == 'Accepted' or request.status == 'Negotiated' %}
+            {% if request.campaign.status == 'Active' %}
+            <tr>
+                <td>{{request.campaign.id}}</td>
+                <td>{{request.campaign.title}}</td>
+                <td>
+                    <a href="{{url_for('view_campaign', id=request.campaign.id)}}" class="btn btn-primary">
+                        <i class="fas fa-search    "></i>
+                        View
+                    </a>
+                    <a href="{{url_for('mark_completed', id=request.campaign.id)}}" class="btn btn-success">
+                        <i class="fa fa-check   "></i>
+                        Mark Complete
+                    </a>
+                </td>
+                <td>{{request.campaign.status}}</td>                
+            </tr>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+
+            {% for request in requests_2 %}
+            {% if request.status == 'Accepted' or request.status == 'Negotiated' %}
+            {% if request.campaign.status == 'Active' %}
+            <tr>
+                <td>{{request.campaign.id}}</td>
+                <td>{{request.campaign.title}}</td>
+                <td>
+                    <a href="{{url_for('view_campaign', id=request.campaign.id)}}" class="btn btn-primary">
+                        <i class="fas fa-search    "></i>
+                        View
+                    </a>
+                    <a href="{{url_for('mark_completed', id=request.campaign.id)}}" class="btn btn-success">
+                        <i class="fa fa-check   "></i>
+                        Mark Complete
+                    </a>
+                </td>
+                <td>{{request.campaign.status}}</td>                
+            </tr>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+        
+    
+    
+{% endblock %}
+
+{% block style %}
+    <style>
+
+        .cards-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .card-button {
+            border: none;
+            background-color:wheat;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            margin:0 10px;
+            min-width: 250px; /* Minimum width for cards */
+            max-width: 330px;
+        }
+        .card-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            background-color:wheat; 
+        }
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 150px;
+            text-align: center;
+            padding: 10px;
+            
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+    
+{% endblock %}

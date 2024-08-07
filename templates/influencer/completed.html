@@ -1,0 +1,50 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Completed Requests
+{% endblock %}
+
+{% block content %}
+<div class="request-list">
+    {% for request in requests %}
+    {% if request.status == 'Accepted' or request.status == 'Negotiated' %}
+    {% if request.campaign.status == 'Completed' or request.campaign.status == 'Paid' %}
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">{{request.campaign_title}}</h5>
+          <p class="card-text">
+            <strong>Requirements : </strong>{{request.requirements}}
+            <br>
+            <strong>Payment : </strong>{{request.payment}}
+            <br>
+            {% if request.campaign.status == 'Paid' %}
+            <strong>Payment Status : </strong>Recieved
+            {% else %}
+            <strong>Payment Status : </strong>Not Recieved
+            {% endif %}
+          </p>
+        </div>
+    </div>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block style %}
+    <style>
+        .request-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .card {
+            margin: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+    
+{% endblock %}

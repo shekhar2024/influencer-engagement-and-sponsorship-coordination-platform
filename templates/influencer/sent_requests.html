@@ -10,13 +10,16 @@
     <h1 class="display-2">Sent Requests</h1>
     <div class="request-list">
         {% for request in requests %}
+        {% if not request.status == 'pending' or not request.campaign.sponsor.flag %}
         <div class="card" style="width: 18rem;">
             <div class="card-body">
               <h5 class="card-title">{{request.campaign_title}}</h5>
               <p class="card-text">
-                Requirements : {{request.requirements}}
+                <strong>Requirements : </strong>{{request.requirements}}
                 <br>
-                Payment : {{request.payment}}
+                <strong>Payment : </strong>{{request.payment}}
+                <br>
+                <strong>Status : </strong>{{request.status}}
               </p>
               <a href="{{url_for('edit_request_influencer', request_id=request.id)}}" class="btn btn-primary">
                 <i class="fas fa-edit" ></i>
@@ -28,6 +31,7 @@
             </a>
             </div>
         </div>
+        {% endif %}
         {% endfor %}
 
     </div>

@@ -1,0 +1,65 @@
+{% extends 'layout.html' %}
+j. 
+{% block title %}
+    New Requests
+{% endblock %}
+
+{% block content %}
+<h1 class="display-4">New Requests</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Request ID</th>
+            <th>Campaign Name</th>
+            <th>Influencer Username</th>
+            <th>Payment</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for campaign in campaigns %}
+        {% if campaign.status == 'pending' %}
+        {% for request in campaign.ad_requests_byinfluencer %}
+        {% if not request.influencer.flag %}
+        {% if request.status == 'pending' %}
+        
+        <tr>
+            <td>{{request.id}}</td>
+            <td>{{request.campaign_title}}</td>
+            <td>{{request.influencer_name}}</td>
+            <td>{{request.payment}}</td>
+            <td>
+                <a href="{{url_for('view_request_sponsor', request_id=request.id)}}" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                    View
+                </a>
+                <a href="{{url_for('accept_new_request_sponsor', request_id=request.id)}}" class="btn btn-success">
+                    <i class="fa-sharp fa-solid fa-check" ></i>
+                    Accept
+                </a>
+                <a href="{{url_for('reject_new_request_sponsor', request_id=request.id)}}" class="btn btn-danger">
+                    <i class="fa-solid fa-xmark"></i>
+                    Reject
+                </a>    
+            </td>
+        </tr>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block style %}
+    <style>
+        .table {
+            margin-top: 20px;
+        }
+    </style>
+{% endblock %}
+{% block script %}
+    
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Completed Requests
+{% endblock %}
+
+{% block content %}
+<div class="request-list">
+    {% for campaign in campaigns %}
+    {% if campaign.status == 'Completed' or campaign.status == 'Paid' %}
+    {% for request in campaign.ad_requests_bysponsor %}
+    {% if request.status == 'Accepted' or request.status == 'Negotiated' %}
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">{{request.campaign_title}}</h5>
+          <p class="card-text">
+            <strong>Requirements : </strong>{{request.requirements}}
+            <br>
+            <strong>Payment : </strong>{{request.payment}}
+            {% if request.campaign.status == 'Paid' %}
+            <br>
+            <strong>Paid</strong>
+            {% endif %}
+          </p>
+          {% if request.campaign.status == 'Completed' %}
+          <a href="{{url_for('payment', id=campaign.id)}}" class="btn btn-success">
+            Payment
+        </a>
+        {% endif %}
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% for request in campaign.ad_requests_byinfluencer %}
+    {% if request.status == 'Accepted' or request.status == 'Negotiated' %}
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">{{request.campaign_title}}</h5>
+          <p class="card-text">
+            <strong>Requirements : </strong>{{request.requirements}}
+            <br>
+            <strong>Payment : </strong>{{request.payment}}
+            {% if request.campaign.status == 'Paid' %}
+            <br>
+            <strong>Paid</strong>
+            {% endif %}
+          </p>
+          {% if request.campaign.status == 'Completed' %}
+          <a href="{{url_for('payment', id=campaign.id)}}" class="btn btn-success">
+            Payment
+        </a>
+        {% endif %}
+        
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% endfor %}
+    
+</div>
+{% endblock %}
+
+{% block style %}
+    <style>
+        .request-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .card {
+            margin: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+    
+{% endblock %}

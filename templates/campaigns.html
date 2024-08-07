@@ -33,7 +33,13 @@
                 <td>
                     <a href="{{url_for('sent_requests_sponsor', id=campaign.id)}}" class="btn btn-primary">
                         <i class="fas fa-envelope    "></i>
-                        {{campaign.ad_requests_bysponsor|length}}
+                        {% set ns = namespace(count=0) %}
+                        {% for request in campaign.ad_requests_byinfluencer %}
+                            {% if not request.influencer.flag %}
+                                {% set ns.count = ns.count + 1 %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ns.count}}
                     </a>
                 </td>
                 <td>
@@ -41,9 +47,11 @@
                         <i class="fas fa-envelope   "></i>
                         {% set ns = namespace(count=0) %}
                         {% for request in campaign.ad_requests_byinfluencer %}
+                        {% if not request.influencer.flag %}
                             {% if request.status == 'pending' %}
                                 {% set ns.count = ns.count + 1 %}
                             {% endif %}
+                        {% endif %}
                         {% endfor %}
                         {{ns.count}}    
                     </a>

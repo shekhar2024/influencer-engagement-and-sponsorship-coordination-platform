@@ -27,7 +27,9 @@
             <label for="influencer_id" class="form-label">Influencer's User Name</label>
             <select name="influencer_id" id="influencer_id" class="form-control" required>
                 {% for influencer in influencers %}
+                {% if not influencer.flag %}
                     <option value="{{influencer.id}}">{{influencer.username}}</option>
+                {% endif %}
                 {% endfor %}
             </select>
         </div>

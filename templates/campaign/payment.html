@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+
+    Payment
+
+{% endblock %}
+
+{% block content %}
+
+    <h1 class="display-2">Payment of &#8377;{{pay}} for {{campaign.title}}</h1>
+
+    <form action="" method="post" class="form">
+        
+        <button type="submit" class="btn btn-primary">
+            
+            Pay
+        </button>
+    </form>
+
+{% endblock %}

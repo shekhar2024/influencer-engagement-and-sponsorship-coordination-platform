@@ -15,10 +15,12 @@
             <label for="influencer_id" class="form-label">Influencer's Username</label>
             <select name="influencer_id" id="influencer_id" class="form-control" required>
                 {% for infl in influencers %}
+                {% if not infl.flag %}
                 {% if infl.id == influencer.id %}
                 <option selected value="{{infl.id}}">{{infl.username}}</option>
                 {% else %}
                     <option value="{{infl.id}}">{{infl.username}}</option>
+                {% endif %}
                 {% endif %}
                 {% endfor %}
             </select>

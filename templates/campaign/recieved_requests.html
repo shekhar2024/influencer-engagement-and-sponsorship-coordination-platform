@@ -20,6 +20,7 @@
         </thead>
         <tbody>
             {% for request in requests %}
+            {% if not request.influencer.flag %}
             {% if request.campaign.status == 'pending' %}
             {% if request.status == 'pending' %}
             <tr>
@@ -40,6 +41,7 @@
                     </a>
                 </td>
             </tr>
+            {% endif %}
             {% endif %}
             {% endif %}
             {% endfor %}
