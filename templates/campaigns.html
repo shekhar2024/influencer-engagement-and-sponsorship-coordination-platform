@@ -28,13 +28,21 @@
             {% for campaign in campaigns %}
             {% if campaign.status == 'pending' %}
             <tr>
+                {% if campaign.flag %}
+                <td>{{campaign.id}}</td>
+                <td>{{campaign.title}}</td>
+                <td><i class="fas fa-ban"></i></td>
+                <td><i class="fas fa-ban"></i></td>
+                <td><i class="fas fa-ban"></i></td>
+                <td>Flagged</td>
+                {% else %}
                 <td>{{campaign.id}}</td>
                 <td>{{campaign.title}}</td>
                 <td>
                     <a href="{{url_for('sent_requests_sponsor', id=campaign.id)}}" class="btn btn-primary">
                         <i class="fas fa-envelope    "></i>
                         {% set ns = namespace(count=0) %}
-                        {% for request in campaign.ad_requests_byinfluencer %}
+                        {% for request in campaign.ad_requests_bysponsor %}
                             {% if not request.influencer.flag %}
                                 {% set ns.count = ns.count + 1 %}
                             {% endif %}
@@ -70,7 +78,12 @@
                         Delete
                     </a>
                 </td>
-                <td>{{campaign.status}}</td>                
+                {% if campaign.status == 'pending' %}
+                <td>Pending</td>
+                {% else %}
+                <td>{{campaign.status}}</td>   
+                {% endif %} 
+                {% endif %}            
             </tr>
             {% endif %}
             {% endfor %}

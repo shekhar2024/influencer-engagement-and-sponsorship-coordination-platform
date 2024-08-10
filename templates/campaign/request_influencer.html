@@ -29,7 +29,9 @@
             <label for="campaign_id" class="form-label">Campaign</label>
             <select name="campaign_id" id="campaign_id" class="form-control" required>
                 {% for camp in campaigns %}
+                {% if not camp.flag %}
                     <option value="{{camp.id}}">{{camp.title}}</option>
+                {% endif %}
                 {% endfor %}
             </select>
         </div>

@@ -10,6 +10,7 @@
     <h1 class="display-2">Requests in Negotiations</h1>
     <div class="request-list">
         {% for request in requests %}
+        {% if not request.campaign.flag or not request.status == 'In Negotiation' %}
         {% if request.status == 'In Negotiation' or request.status == 'Negotiated' or request.status == 'Negotiation Rejected' %}
         {% if not request.campaign.sponsor.flag or not request.status == 'In Negotiation' %}
         <div class="card" style="width: 18rem;">
@@ -30,6 +31,7 @@
               </p>
             </div>
         </div>
+        {% endif %}
         {% endif %}
         {% endif %}
         {% endfor %}

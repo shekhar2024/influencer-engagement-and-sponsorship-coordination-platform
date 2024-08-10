@@ -18,10 +18,10 @@ class User(db.Model):
     is_influencer = db.Column(db.Boolean,nullable=False,default=False)
     is_admin = db.Column(db.Boolean,nullable=False,default=False)
 
-    campaigns = db.relationship('Campaign',backref='sponsor',lazy=True)
-    ad_requests_bysponsor = db.relationship('Ad_Request_bysponsor',backref='influencer',lazy=True)
-    ad_requests_byinfluencer = db.relationship('Ad_Request_byinfluencer',backref='influencer',lazy=True)
-    flag = db.relationship('Flagged_User',backref='flagged_user',uselist=False)
+    campaigns = db.relationship('Campaign',backref='sponsor',lazy=True, cascade='all, delete-orphan')
+    ad_requests_bysponsor = db.relationship('Ad_Request_bysponsor',backref='influencer',lazy=True, cascade='all, delete-orphan')
+    ad_requests_byinfluencer = db.relationship('Ad_Request_byinfluencer',backref='influencer',lazy=True, cascade='all, delete-orphan')
+    flag = db.relationship('Flagged_User',backref='flagged_user',uselist=False, cascade='all, delete-orphan')
 
 class Campaign(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -75,6 +75,8 @@ with app.app_context():
         admin = User(username='admin', name="Admin", passhash=password_hash,is_admin=True)
         db.session.add(admin)
         db.session.commit()
+
+    
 
     
 

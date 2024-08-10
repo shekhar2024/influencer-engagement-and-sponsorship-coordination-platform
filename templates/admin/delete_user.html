@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Delete User
+{% endblock %}
+
+{% block content %}
+
+    <h1 class="display-2">Are you sure you want to delete the account of {{user.username}} permanently.</h1>
+    <form action="" method="POST">
+        <button type="submit" class="btn btn-danger">Delete</button>
+
+{% endblock %}

@@ -1,0 +1,214 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Statistics
+{% endblock %}
+
+{% block content %}
+
+<div>
+    <div class="chart1">
+    <canvas id="myChart1" width="100" height="100"></canvas>
+    </div>
+    <div class="chart2">
+    <canvas id="myChart2" width="100" height="100"></canvas>
+    </div>
+    <div class="chart3">
+    <canvas id="myChart3" width="100" height="100"></canvas>
+    </div>
+    <div class="chart4">
+    <canvas id="myChart4" width="100" height="100"></canvas>
+    </div>
+    
+    
+</div>
+
+
+
+    
+{% endblock %}
+
+{% block style %}
+
+<style>
+    .chart1{
+        width: 40%;
+        height: 40%;
+        margin: 0 auto;
+        display: block;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        float: left;
+    }
+    .chart2{
+        width: 40%;
+        height: 40%;
+        margin: 0 auto;
+        display: block;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        float: right;
+    }
+    .chart3{
+        width: 40%;
+        height: 40%;
+        margin: 0 auto;
+        display: block;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        float: left;
+    }
+    .chart4{
+        width: 40%;
+        height: 40%;
+        margin: 0 auto;
+        display: block;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        float: right;
+    }
+
+    
+
+</style>
+
+{% endblock %}
+
+{% block script %}
+      
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <script>
+    const ctx1 = document.getElementById('myChart1').getContext('2d');
+    const ctx2 = document.getElementById('myChart2').getContext('2d');
+    const ctx3 = document.getElementById('myChart3').getContext('2d');
+    const ctx4 = document.getElementById('myChart4').getContext('2d');
+
+  
+    new Chart(ctx1, {
+      type: 'doughnut',
+      data: {
+        labels: {{campaign_categories | safe}},
+        datasets: [{
+          label: '# of campaigns',
+          data: {{category_data | safe}},
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+          
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'right'
+          },
+          title: {
+            display: true,
+            text: 'Campaigns by Category'
+        
+        }
+      }
+      }
+      
+    });
+
+    new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+          labels: ['Pending', 'Active', 'Completed'],
+          datasets: [{
+            label: '# of campaigns',
+            data: [{{pending_campaigns | safe}}, {{active | safe}}, {{completed | safe}}],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'right'
+            },
+            title: {
+              display: true,
+              text: 'Campaigns by Status'
+          }
+        }
+        }
+      });
+
+  new Chart(ctx3, {
+    type: 'doughnut',
+    data: {
+      labels: ['Pending', 'Accepted', 'Rejected'],
+      datasets: [{
+        label: '# of requests',
+        data: [{{pending_requests | safe}}, {{accepted | safe}}, {{rejected | safe}}],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'right'
+        },
+        title: {
+          display: true,
+          text: 'Ad Requests by Status'
+    }
+  }
+  }
+  });
+
+  new Chart(ctx4, {
+    type: 'doughnut',
+    data: {
+      labels: ['Payment Done', 'Payment Not Done'],
+      datasets: [{
+        label: '# of completed requests',
+        data: [{{paid | safe}}, {{unpaid | safe}}],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      },
+      plugins: {
+       
+        title: {
+          display: true,
+          text: 'Completed Requests by Payment Status'
+    }
+      }
+  }
+  });
+
+</script>
+
+{% endblock %}

@@ -16,6 +16,8 @@
           <p class="card-text">
             <strong>Requirements : </strong>{{request.requirements}}
             <br>
+            <strong>Influencer : </strong>{{request.influencer.username}}
+            <br>
             <strong>Payment : </strong>{{request.payment}}
             {% if request.campaign.status == 'Paid' %}
             <br>
@@ -38,6 +40,8 @@
           <h5 class="card-title">{{request.campaign_title}}</h5>
           <p class="card-text">
             <strong>Requirements : </strong>{{request.requirements}}
+            <br>
+            <strong>Influencer : </strong>{{request.influencer.username}}
             <br>
             <strong>Payment : </strong>{{request.payment}}
             {% if request.campaign.status == 'Paid' %}

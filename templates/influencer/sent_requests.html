@@ -10,6 +10,7 @@
     <h1 class="display-2">Sent Requests</h1>
     <div class="request-list">
         {% for request in requests %}
+        {% if not request.campaign.flag or not request.status == 'pending' %}
         {% if not request.status == 'pending' or not request.campaign.sponsor.flag %}
         <div class="card" style="width: 18rem;">
             <div class="card-body">
@@ -31,6 +32,7 @@
             </a>
             </div>
         </div>
+        {% endif %}
         {% endif %}
         {% endfor %}
 

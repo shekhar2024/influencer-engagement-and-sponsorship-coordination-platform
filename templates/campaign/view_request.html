@@ -7,11 +7,22 @@
 {% endblock %}
 
 {% block content %}
-    <p>Campaign : {{request.campaign_title}}</p>
-    <p>Influencer's Username : {{request.influencer_name}}</p>
-    <p>Requirements : {{request.requirements}}</p>
-    <p>Payment : {{request.payment}}</p>
-    <p>Status : {{request.status}}</p>
+    <p><strong>Campaign : </strong>{{request.campaign_title}}</p>
+    <p><strong>Influencer's Username : </strong>{{request.influencer_name}}</p>
+    <p><strong>Requirements : </strong>{{request.requirements}}</p>
+    <p><strong>Payment : </strong>{{request.payment}}</p>
+    {% if request.status == 'pending' or request.status == 'In Negotiation' %}
+    <p><strong>Status : </strong>Pending</p>
+    {% endif %}
+    {% if request.status == 'Negotiated' %}
+    <p><strong>Status : </strong>Accepted</p>
+    {% endif %}
+    {% if request.status == 'Negotiation Rejected' %}
+    <p><strong>Status : </strong>Rejected</p>
+    {% endif %}
+    {% if request.status == 'Accepted' or request.status == 'Rejected' %}
+    <p><strong>Status : </strong>{{request.status}}</p>
+    {% endif %}
 
  
 {% endblock %}

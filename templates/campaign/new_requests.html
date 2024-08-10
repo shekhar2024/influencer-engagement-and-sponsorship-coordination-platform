@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-j. 
+
 {% block title %}
     New Requests
 {% endblock %}
@@ -19,6 +19,7 @@ j.
     </thead>
     <tbody>
         {% for campaign in campaigns %}
+        {% if not campaign.flag %}
         {% if campaign.status == 'pending' %}
         {% for request in campaign.ad_requests_byinfluencer %}
         {% if not request.influencer.flag %}
@@ -30,7 +31,8 @@ j.
             <td>{{request.influencer_name}}</td>
             <td>{{request.payment}}</td>
             <td>
-                <a href="{{url_for('view_request_sponsor', request_id=request.id)}}" class="btn btn-primary">
+                
+                <a href="{{url_for('view_request_sponsor_byinfluencer', request_id=request.id)}}" class="btn btn-primary">
                     <i class="fas fa-search"></i>
                     View
                 </a>
@@ -42,11 +44,13 @@ j.
                     <i class="fa-solid fa-xmark"></i>
                     Reject
                 </a>    
+                
             </td>
         </tr>
         {% endif %}
         {% endif %}
         {% endfor %}
+        {% endif %}
         {% endif %}
         {% endfor %}
     </tbody>

@@ -15,10 +15,14 @@
             <label for="campaign_id" class="form-label">Campaign</label>
             <select name="campaign_id" id="campaign_id" class="form-control" required>
                 {% for camp in campaigns %}
+                {% if not camp.flag %}
+                {% if camp.status == 'pending' %}
                 {% if camp.id == campaign.id %}
                 <option selected value="{{camp.id}}">{{camp.title}}</option>
                 {% else %}
                     <option value="{{camp.id}}">{{camp.title}}</option>
+                {% endif %}
+                {% endif %}
                 {% endif %}
                 {% endfor %}
             </select>

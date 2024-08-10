@@ -15,10 +15,14 @@
             <label for="campaign_id" class="form-label">Campaign</label>
             <select name="campaign_id" id="campaign_id" class="form-control" required>
                 {% for camp in campaigns %}
+                {% if not camp.flag %}
+                {% if camp.status == 'pending' %}
                 {% if camp.id == request.campaign_id %}
                 <option selected value="{{camp.id}}">{{camp.title}}</option>
                 {% else %}
                     <option value="{{camp.id}}">{{camp.title}}</option>
+                {% endif %}
+                {% endif %}
                 {% endif %}
                 {% endfor %}
             </select>
@@ -27,10 +31,12 @@
             <label for="influencer_id" class="form-label">Influencer's User Name</label>
             <select name="influencer_id" id="influencer_id" class="form-control" required>
                 {% for influencer in influencers %}
+                {% if not influencer.flag %}
                 {% if influencer.id == request.influencer_id %}
                 <option selected value="{{influencer.id}}">{{influencer.username}}</option>
                 {% else %}
                     <option value="{{influencer.id}}">{{influencer.username}}</option>
+                {% endif %}
                 {% endif %}
                 {% endfor %}
             </select>

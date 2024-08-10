@@ -6,6 +6,7 @@
     <h1 class="display-2">Campaigns</h1>
     <div class="campaign-list">
         {% for campaign in campaigns %}
+        {% if not campaign.flag %}
         {% if not campaign.sponsor.flag %}
         {% if campaign.status == 'pending' %}
         {% if campaign.visibility == 'Public' %}
@@ -13,13 +14,13 @@
             <div class="card-body">
               <h5 class="card-title">{{campaign.title}}</h5>
               <p class="card-text">
-                Category : {{campaign.category}}
+                <strong>Category : </strong>{{campaign.category}}
                 <br>
-                Start Date : {{(campaign.start_date|string)[:10]}}
+                <strong>Start Date : </strong>{{(campaign.start_date|string)[:10]}}
                 <br>
-                End Date : {{(campaign.end_date|string)[:10]}}
+                <strong>End Date : </strong>{{(campaign.end_date|string)[:10]}}
                 <br>
-                Budget : &#8377;{{campaign.budget}}
+                <strong>Budget : </strong>&#8377;{{campaign.budget}}
               </p>
                 <a href="{{url_for('view_campaign', id=campaign.id)}}" class="btn btn-primary">
                      <i class="fa fa-search" ></i>
@@ -30,6 +31,7 @@
                     Request</a>
             </div>
         </div>
+        {% endif %}
         {% endif %}
         {% endif %}
         {% endif %}

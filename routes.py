@@ -8,7 +8,6 @@ from datetime import datetime
 
 @app.route('/login')
 def login():
-    requests = Ad_Request_bysponsor.query.all()
     return render_template('login.html')
 
 @app.route('/sponsor_register')
@@ -29,6 +28,10 @@ def login_post():
         return redirect(url_for('login'))
 
     user = User.query.filter_by(username=username).first()
+    
+    if user.flag:
+        flash("Your account has been flagged, you can't login")
+        return redirect(url_for('login'))
 
     if not user:
         flash('User does not exist')
@@ -317,17 +320,19 @@ def sponsor():
     negotiations = 0
     completed = 0
     for campaign in campaigns:
-        if campaign.status == 'pending':
-            for request in campaign.ad_requests_byinfluencer:
-                if not request.influencer.flag:
-                    if request.status == 'pending':
-                        new_requests += 1
+        if not campaign.flag:
+            if campaign.status == 'pending':
+                for request in campaign.ad_requests_byinfluencer:
+                    if not request.influencer.flag:
+                        if request.status == 'pending':
+                            new_requests += 1
 
-        if campaign.status == 'pending':
-            for request in campaign.ad_requests_bysponsor:
-                if not request.influencer.flag:
-                    if request.status == 'In Negotiation':
-                        negotiations += 1
+        if not campaign.flag:
+            if campaign.status == 'pending':
+                for request in campaign.ad_requests_bysponsor:
+                    if not request.influencer.flag:
+                        if request.status == 'In Negotiation':
+                            negotiations += 1
 
         if campaign.status == 'Completed' or campaign.status == 'Paid':
             completed += 1
@@ -778,18 +783,24 @@ def add_request_sponsor_post(campaign_id):
     flash('Request sent successfully')
     return redirect(url_for('sent_requests_sponsor', id=camp_id))
 
-@app.route('/campaign/request/<int:request_id>/view')
+@app.route('/campaign/request_bysponsor/<int:request_id>/view')
 @sponsor_required
-def view_request_sponsor(request_id):
-    request_1 = Ad_Request_bysponsor.query.get(request_id)
-    request_2 = Ad_Request_byinfluencer.query.get(request_id)
-    if not request_1 and not request_2:
+def view_request_sponsor_bysponsor(request_id):
+    request = Ad_Request_bysponsor.query.get(request_id)
+    if not request:
         flash('Request does not exist')
         return redirect(url_for('campaigns'))
-    if request_1:
-        request = request_1
-    else:
-        request = request_2
+    
+    return render_template('campaign/view_request.html', request=request)
+
+@app.route('/campaign/request_byinfluencer/<int:request_id>/view')
+@sponsor_required
+def view_request_sponsor_byinfluencer(request_id):
+    request = Ad_Request_byinfluencer.query.get(request_id)
+    if not request:
+        flash('Request does not exist')
+        return redirect(url_for('campaigns'))
+
     return render_template('campaign/view_request.html', request=request)
 
 @app.route('/campaign/request/<int:request_id>/edit')
@@ -893,10 +904,6 @@ def find_influencers():
         return render_template('find_influencers.html', influencers=influencers)
     if parameter == 'niche':
         influencers = User.query.filter(User.niche.ilike(f'%{query}%')).all()
-        return render_template('find_influencers.html', influencers=influencers)
-    if parameter == 'min_reach':
-        query = int(query)
-        influencers = User.query.filter(User.reach >= query).all()
         return render_template('find_influencers.html', influencers=influencers)
     return render_template('find_influencers.html', influencers=influencers)
 
@@ -1002,10 +1009,6 @@ def find_users():
     if parameter == 'niche':
         users = User.query.filter(User.niche.ilike(f'%{query}%')).all()
         return render_template('admin/find_users.html', users=users)
-    if parameter == 'min_reach':
-        query = int(query)
-        users = User.query.filter(User.reach >= query).all()
-        return render_template('admin/find_users.html', users=users)
     if parameter == 'roll':
         users = User.query.filter(User.is_sponsor==True).all()
         return render_template('admin/find_users.html', users=users)
@@ -1058,10 +1061,7 @@ def find_campaigns():
     if parameter == 'category':
         campaigns = Campaign.query.filter(Campaign.category.ilike(f'%{query}%')).all()
         return render_template('admin/find_campaigns.html', campaigns=campaigns)
-    if parameter == 'min_budget':
-        query = int(query)
-        campaigns = Campaign.query.filter(Campaign.budget >= query).all()
-        return render_template('admin/find_campaigns.html', campaigns=campaigns)
+
     return render_template('admin/find_campaigns.html', campaigns=campaigns)
 
 @app.route('/flag_campaign/<int:id>')
@@ -1108,11 +1108,7 @@ def admin_dashboard():
     influencers = User.query.filter_by(is_influencer=True).all()
     public_campaigns = Campaign.query.filter_by(visibility='Public').count()
     private_campaigns = Campaign.query.filter_by(visibility='Private').count()
-    request_sponsor = Ad_Request_bysponsor.query.all()
-    request_influencer = Ad_Request_byinfluencer.query.all()
-    request_accepted_sponsor = Ad_Request_byinfluencer.query.filter_by(status='Accepted').count()
-    request_accepted_influencer = Ad_Request_bysponsor.query.filter_by(status='Accepted').count()
-    return render_template('admin/admin_dashboard.html', flagged_users=flagged_users, flagged_campaigns=flagged_campaigns, sponsors=sponsors, influencers=influencers, campaigns=campaigns, request_sponsor=request_sponsor, request_influencer=request_influencer, request_accepted_sponsor=request_accepted_sponsor, request_accepted_influencer=request_accepted_influencer, public_campaigns=public_campaigns, private_campaigns=private_campaigns)
+    return render_template('admin/admin_dashboard.html', flagged_users=flagged_users, flagged_campaigns=flagged_campaigns, sponsors=sponsors, influencers=influencers, public_campaigns=public_campaigns, private_campaigns=private_campaigns)
 
 @app.route('/admin_dashboard/unflag_user/<int:id>')
 @admin_required
@@ -1138,6 +1134,105 @@ def unflag_campaign_dashboard(id):
     flash('Campaign unflagged successfully')
     return redirect(url_for('admin_dashboard'))
 
+@app.route('/admin/delete_user/<int:id>')
+@admin_required
+def delete_user(id):
+    user = User.query.get(id)
+    if not user:
+        flash('User does not exist')
+        return redirect(url_for('admin_dashboard'))
+    return render_template('admin/delete_user.html', user=user)
+
+@app.route('/admin/delete_user/<int:id>', methods=['POST'])
+@admin_required
+def delete_user_post(id):
+    user = User.query.get(id)
+    if not user:
+        flash('User does not exist')
+        return redirect(url_for('admin_dashboard'))
+    db.session.delete(user)
+    db.session.commit()
+    flash('User deleted successfully')
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/delete_campaign/<int:id>')
+@admin_required
+def delete_campaign_admin(id):
+    campaign = Campaign.query.get(id)
+    if not campaign:
+        flash('Campaign does not exist')
+        return redirect(url_for('admin_dashboard'))
+    return render_template('admin/delete_campaign.html', campaign=campaign)
+
+@app.route('/admin/delete_campaign/<int:id>', methods=['POST'])
+@admin_required
+def delete_campaign_post_admin(id):
+    campaign = Campaign.query.get(id)
+    if not campaign:
+        flash('Campaign does not exist')
+        return redirect(url_for('admin_dashboard'))
+    db.session.delete(campaign)
+    db.session.commit()
+    flash('Campaign deleted successfully')
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/stats')
+@admin_required
+def admin_stats():
+    campaigns = Campaign.query.all()
+
+    campaign_categories = []
+    category_data = []
+    for campaign in campaigns:
+        if campaign.category not in campaign_categories:
+            campaign_categories.append(campaign.category)
+            category_data.append(1)
+        else:
+            x=0
+            for i in campaign_categories:
+                if campaign.category == i:
+                    break
+                x+=1
+            category_data[x] += 1
+
+    pending_campaigns = 0
+    active = 0
+    completed = 0   
+    unpaid = 0
+    paid = 0
+
+    for campaign in campaigns:
+        if campaign.status == 'pending':
+            pending_campaigns += 1
+        if campaign.status == 'Active':
+            active += 1
+        if campaign.status == 'Completed' or campaign.status == 'Paid':
+            completed += 1
+
+            if campaign.status == 'Completed':
+                unpaid += 1
+            if campaign.status == 'Paid':
+                paid += 1
+
+    reqeusts_1 = Ad_Request_bysponsor.query.all()
+    requests_2 = Ad_Request_byinfluencer.query.all()
+    requests = reqeusts_1 + requests_2
+    pending_requests = 0
+    accepted = 0
+    rejected = 0
+    for request in requests:
+        if request.status == 'pending':
+            pending_requests += 1
+        if request.status == 'Accepted' or request.status == 'Negotiated':
+            accepted += 1
+        if request.status == 'Rejected' or request.status == 'Negotiation Rejected':
+            rejected += 1
+
+    
+
+        
+    return render_template('admin/stats.html', campaign_categories=campaign_categories, category_data=category_data, pending_campaigns=pending_campaigns, active=active, completed=completed, pending_requests=pending_requests, accepted=accepted, rejected=rejected, unpaid=unpaid, paid=paid)
+
 #-----Influencer Pages-----#
 
 @app.route('/influencer/find_campaigns')
@@ -1152,10 +1247,7 @@ def find_campaigns_influencer():
     if parameter == 'category':
         campaigns = Campaign.query.filter(Campaign.category.ilike(f'%{query}%')).all()
         return render_template('influencer/find_campaigns.html', campaigns=campaigns)
-    if parameter == 'min_budget':
-        query = int(query)
-        campaigns = Campaign.query.filter(Campaign.budget >= query).all()
-        return render_template('influencer/find_campaigns.html', campaigns=campaigns)
+        
     return render_template('influencer/find_campaigns.html', campaigns=campaigns)
 
 @app.route('/request_campaign/<int:id>')
