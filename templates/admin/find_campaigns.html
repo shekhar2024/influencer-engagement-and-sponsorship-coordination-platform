@@ -4,50 +4,130 @@
     {% include 'campaign_searchbar.html' with context %}
     <hr>
     <h1 class="display-2">Campaigns</h1>
-    <div class="campaign-list">
+    <div class="container">
+        <div class="row row-custom">
         {% for campaign in campaigns %}
-        <div class="card" style="width: 18rem;">
+        <div class="card card-custom">
             <div class="card-body">
               <h5 class="card-title">{{campaign.title}}</h5>
-              <p class="card-text">
-                <strong>Category : </strong>{{campaign.category}}
-                <br>
-                <strong>Start Date : </strong>{{campaign.start_date}}
-                <br>
-                <strong>End Date : </strong>{{campaign.end_date}}
-                <br>
-                <strong>Budget : </strong>&#8377;{{campaign.budget}}
-                <br>
-                <strong>Status : </strong>{{campaign.status}}
-                <br>
-                <strong>Visibility : </strong>{{campaign.visibility}}
-              </p>
-                <a href="{{url_for('view_campaign', id=campaign.id)}}" class="btn btn-primary">
+              <p class="card-text"><strong>Category:</strong> {{campaign.category}}</p>
+              <p class="card-text"><strong>Start Date:</strong> {{(campaign.start_date|string)[:10]}}</p>
+              <p class="card-text"><strong>End Date:</strong> {{(campaign.end_date|string)[:10]}}</p>
+              <p class="card-text"><strong>Budget:</strong> &#8377;{{campaign.budget}}</p>
+              {% if campaign.status == 'pending' %}
+                <p class="card-text"><strong>Status:</strong> Pending</p>
+              {% else %}
+                {% if campaign.status == 'Paid' %}
+                    <p class="card-text"><strong>Status:</strong> Completed</p>
+                {% else %}
+                    <p class="card-text"><strong>Status:</strong> {{campaign.status}}</p>
+                {% endif %}
+              {% endif %}
+              <p class="card-text"><strong>Visibility:</strong> {{campaign.visibility}}</p>
+              <a href="{{url_for('view_campaign', id=campaign.id)}}" class="link-button1">
                      <i class="fa fa-search" ></i>
                         View
-                </a>
+              </a>
               {% if campaign.flag %}
-              <a href="{{url_for('unflag_campaign', id=campaign.id)}}" class="btn btn-success">Unflag</a>
+              <a href="{{url_for('unflag_campaign', id=campaign.id)}}" class="link-button2">Unflag</a>
               {% else %}
-              <a href="{{url_for('flag_campaign', id=campaign.id)}}" class="btn btn-danger">Flag</a>
-                {% endif %}
+              <a href="{{url_for('flag_campaign', id=campaign.id)}}" class="link-button3">Flag</a>
+              {% endif %}
             </div>
         </div>
         {% endfor %}
-
+        </div>
     </div>
 
 {% endblock %}
 {% block style %}
     <style>
-        .campaign-list {
+        .card-custom {
+            width: 250px;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            padding: 20px;
+            text-align: center;
+            background-color: #ffffff;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 5px solid #007bff;
+        }
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #343a40;
+        }
+        .card-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+        .link-button1 {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+            display:inline-flex;
+            align-items: center;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border: 1px solid #007bff;
+            border-radius: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .link-button1:hover {
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .link-button1 i {
+            margin-right: 5px;
+        }
+        .link-button2 {
+            color:green;
+            text-decoration: none;
+            font-weight: 500;
+            display:inline-flex;
+            margin-top: 5px;
+            align-items: center;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border: 1px solid green;
+            border-radius: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .link-button2:hover {
+            background-color: green;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .link-button3 {
+            color: red;
+            text-decoration: none;
+            font-weight: 500;
+            display:inline-flex;
+            margin-top: 5px;
+            align-items: center;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border: 1px solid red;
+            border-radius: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .link-button3:hover {
+            background-color: red;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        
+        .row-custom {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
-        }
-
-        .card {
-            margin: 10px;
         }
     </style>
 {% endblock %}

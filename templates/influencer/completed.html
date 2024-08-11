@@ -5,42 +5,61 @@
 {% endblock %}
 
 {% block content %}
-<div class="request-list">
+<div class="container">
+    <div class="row row-custom">
     {% for request in requests %}
     {% if request.status == 'Accepted' or request.status == 'Negotiated' %}
     {% if request.campaign.status == 'Completed' or request.campaign.status == 'Paid' %}
-    <div class="card" style="width: 18rem;">
+    <div class="card card-custom">
         <div class="card-body">
           <h5 class="card-title">{{request.campaign_title}}</h5>
-          <p class="card-text">
-            <strong>Requirements : </strong>{{request.requirements}}
-            <br>
-            <strong>Payment : </strong>{{request.payment}}
-            <br>
+            <p class="card-text"><strong>Requirements:</strong> {{request.requirements}}</p>
+            <p class="card-text"><strong>Payment:</strong> {{request.payment}}</p>
             {% if request.campaign.status == 'Paid' %}
-            <strong>Payment Status : </strong>Recieved
+            <p class="card-text" style="font-size: 1rem; color:green;"><strong>Payment Recieved</strong><i class="fa-solid fa-circle-check" style="margin-left:3px;"></i></p>
             {% else %}
-            <strong>Payment Status : </strong>Not Recieved
+            <p class="card-text" style="font-size:0.93rem; color:red;"><strong>Payment Not Recieved</strong><i class="fa-solid fa-circle-xmark" style="margin-left:3px;"></i></p>
             {% endif %}
-          </p>
         </div>
     </div>
     {% endif %}
     {% endif %}
     {% endfor %}
+    </div>
 </div>
 {% endblock %}
 
 {% block style %}
     <style>
-        .request-list {
+        .card-custom {
+            width: 250px;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            padding: 20px;
+            text-align: center;
+            background-color: #ffffff;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 5px solid #007bff;
+        }
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #343a40;
+        }
+        .card-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+        .row-custom {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
-        }
-
-        .card {
-            margin: 10px;
         }
     </style>
 {% endblock %}

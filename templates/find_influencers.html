@@ -4,49 +4,88 @@
     {% include 'influencer_searchbar.html' with context %}
     <hr>
     <h1 class="display-2">Influencers</h1>
-    <div class="influencer-list">
+    <div class="container">
+        <div class="row row-custom">
         {% for influencer in influencers %}
         {% if not influencer.flag %}
         {% if not influencer.is_admin %}
         {% if influencer.is_influencer %}
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">{{influencer.username}}</h5>
-              <p class="card-text">
-                <strong>Name : </strong>{{influencer.name}}
-                <br>
-                <strong>Category : </strong>{{influencer.category}}
-                <br>
-                <strong>Niche : </strong>{{influencer.niche}}
-                <br>
-                <strong>Reach : </strong>{{influencer.reach}}
-              </p>
-              <a href="{{url_for('request_influencer', id=influencer.id)}}" class="btn btn-success">
-                <i class="fas fa-paper-plane" ></i>
-                Send Ad Request
-            </a>
-            </div>
-        </div>
+
+                <div class="card card-custom">
+                    <div class="card-body">
+                        <h5 class="card-title">{{influencer.username}}</h5>
+                        <p class="card-text"><strong>Name:</strong> {{influencer.name}}</p>
+                        <p class="card-text"><strong>Category:</strong> {{influencer.category}}</p>
+                        <p class="card-text"><strong>Niche:</strong> {{influencer.niche}}</p>
+                        <p class="card-text"><strong>Reach:</strong> {{influencer.reach}}</p>
+                        <a href="{{url_for('request_influencer', id=influencer.id)}}" class="link-button">
+                            <i class="fa fa-paper-plane"></i> Send Ad Request
+                        </a>
+                    </div>
+                </div>
         {% endif %}
         {% endif %}
         {% endif %}
         {% endfor %}
-
+        </div>
     </div>
 
 {% endblock %}
 {% block style %}
     <style>
-        .influencer-list {
+
+        
+        .card-custom {
+            width: 250px;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            padding: 20px;
+            text-align: center;
+            background-color: #ffffff;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 5px solid #007bff;
+        }
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #343a40;
+        }
+        .card-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+        .link-button {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border: 1px solid #007bff;
+            border-radius: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .link-button:hover {
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .link-button i {
+            margin-right: 5px;
+        }
+        .row-custom {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
         }
-
-        .card {
-            margin: 10px;
         
-        }
     </style>
 {% endblock %}
 

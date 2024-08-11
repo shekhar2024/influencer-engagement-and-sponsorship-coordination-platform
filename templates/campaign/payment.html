@@ -8,14 +8,74 @@
 
 {% block content %}
 
-    <h1 class="display-2">Payment of &#8377;{{pay}} for {{campaign.title}}</h1>
+    <div class="payment-container">
+        <h2>Complete Your Payment</h2>
+        <p class="payment-info">Please review the payment details below:</p>
+        <div class="payment-header">
+            <p>Campaign: <strong>{{campaign.title}}</strong></p>
+            <p>From: <strong>{{sponsor.username}}</strong></p>
+            <p>To: <strong>{{influencer.username}}</strong></p>
+        </div>
+        <div class="payment-amount">&#8377;{{pay}}</div>
+        <form action="" method="post" class="form">
+            <button type="submit" class="pay-now-button">
+                Pay Now
+            </button>
+        </form>
+    </div>
 
-    <form action="" method="post" class="form">
-        
-        <button type="submit" class="btn btn-primary">
-            
-            Pay
-        </button>
-    </form>
+    
 
+    
+
+{% endblock %}
+
+{% block style %}
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: Arial, sans-serif;
+    }
+    .payment-container {
+        max-width: 500px;
+        margin: 50px auto;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        text-align: center;
+    }
+    .payment-header {
+        margin-bottom: 20px;
+    }
+    .payment-header p {
+        color: #6c757d;
+    }
+    .payment-amount {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #007bff;
+        margin-bottom: 20px;
+    }
+
+    .pay-now-button {
+        font-size: 1.2rem;
+        padding: 12px 30px;
+        border-radius: 50px;
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        transition: background-color 0.3s;
+    }
+
+    .pay-now-button:hover {
+        background-color: #218838;
+    }
+
+    .payment-info {
+        margin-bottom: 15px;
+        font-size: 1rem;
+        color: #6c757d;
+    }
+</style>
 {% endblock %}

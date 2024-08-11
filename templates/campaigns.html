@@ -34,7 +34,7 @@
                 <td><i class="fas fa-ban"></i></td>
                 <td><i class="fas fa-ban"></i></td>
                 <td><i class="fas fa-ban"></i></td>
-                <td>Flagged</td>
+                <td><strong style="display:inline-block; color:rgb(238, 240, 240); background-color:red; padding:5px 10px; border-radius:15px; font-size: 15px;">Flagged</strong></td>
                 {% else %}
                 <td>{{campaign.id}}</td>
                 <td>{{campaign.title}}</td>
@@ -79,7 +79,7 @@
                     </a>
                 </td>
                 {% if campaign.status == 'pending' %}
-                <td>Pending</td>
+                <td ><strong style="display:inline-block; color:rgb(65, 67, 67); background-color:rgb(245, 245, 14); padding:5px 10px; border-radius:15px; font-size: 15px;">Pending</strong></td>
                 {% else %}
                 <td>{{campaign.status}}</td>   
                 {% endif %} 

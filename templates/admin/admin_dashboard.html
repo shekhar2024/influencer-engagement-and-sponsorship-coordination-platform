@@ -11,32 +11,26 @@
     </div>
 
     <h1 class="display-5">Flagged Users</h1>
-    <div class="user-list">
+    <div class="container">
+      <div class="row row-custom">
         {% for flag in flagged_users %}
-        <div class="card" style="width: 18rem;">
+        <div class="card card-custom">
             <div class="card-body">
               <h5 class="card-title">{{flag.flagged_user.username}}</h5>
-              <p class="card-text">
-                <strong>Name : </strong>{{flag.flagged_user.name}}
-                <br>
+              <p class="card-text"><strong>Name:</strong> {{flag.flagged_user.name}}</p>
                 {% if flag.flagged_user.is_sponsor %}
-                <strong>Industry : </strong>{{flag.flagged_user.industry}}
+                <p class="card-text"><strong>Industry:</strong> {{flag.flagged_user.industry}}</p>
+                <p class="card-text"><strong>Budget:</strong> &#8377;{{flag.flagged_user.budget}}</p>
+                <p class="card-text"><strong>Roll:</strong> Sponsor</p>
                 <br>
-                <strong>Budget : </strong>&#8377;{{flag.flagged_user.budget}}
-                <br>
-                <strong>Roll : </strong>Sponsor
                 {% else %}
-                <strong>Category : </strong>{{flag.flagged_user.category}}
-                <br>
-                <strong>Niche : </strong>{{flag.flagged_user.niche}}
-                <br>
-                <strong>Reach : </strong>{{flag.flagged_user.reach}}
-                <br>
-                <strong>Roll : </strong>Influencer
+                <p class="card-text"><strong>Category:</strong> {{flag.flagged_user.category}}</p>
+                <p class="card-text"><strong>Niche:</strong> {{flag.flagged_user.niche}}</p>
+                <p class="card-text"><strong>Reach:</strong> {{flag.flagged_user.reach}}</p>
+                <p class="card-text"><strong>Roll:</strong> Influencer</p>
                 {% endif %}
-              </p>
-              <a href="{{url_for('unflag_user_dashboard', id=flag.id)}}" class="btn btn-success">Unflag</a>
-              <a href="{{url_for('delete_user', id=flag.flagged_user.id)}}" class="btn btn-danger">
+              <a href="{{url_for('unflag_user_dashboard', id=flag.id)}}" class="link-button1">Unflag</a>
+              <a href="{{url_for('delete_user', id=flag.flagged_user.id)}}" class="link-button2">
                 <i class="fas fa-trash"></i>
                 Delete
             </a>
@@ -44,39 +38,43 @@
         </div>
         {% endfor %}
     </div>
+    </div>
     <hr>
     <h1 class="display-5">Flagged Campaigns</h1>
-    <div class="campaign-list">
+    <div class="container">
+      <div class="row row-custom">
         {% for flag in flagged_campaigns %}
-        <div class="card" style="width: 18rem;">
+        <div class="card card-custom" style="width: 21.02rem;">
             <div class="card-body">
               <h5 class="card-title">{{flag.flagged_campaign.title}}</h5>
-              <p class="card-text">
-                <strong>Category : </strong>{{flag.flagged_campaign.category}}
-                <br>
-                <strong>Start Date : </strong>{{flag.flagged_campaign.start_date}}
-                <br>
-                <strong>End Date : </strong>{{flag.flagged_campaign.end_date}}
-                <br>
-                <strong>Sponsor : </strong>{{flag.flagged_campaign.sponsor.username}}
-                <br>
-                <strong>Status : </strong>{{flag.flagged_campaign.status}}
-                <br>
-                <strong>Visibility : </strong>{{flag.flagged_campaign.visibility}}
-              </p>
-                <a href="{{url_for('view_campaign', id=flag.campaign_id)}}" class="btn btn-primary">
+              <p class="card-text"><strong>Category:</strong> {{flag.flagged_campaign.category}}</p>
+              <p class="card-text"><strong>Start Date:</strong> {{(flag.flagged_campaign.start_date|string)[:10]}}</p>
+              <p class="card-text"><strong>End Date:</strong> {{(flag.flagged_campaign.end_date|string)[:10]}}</p>
+              <p class="card-text"><strong>Sponsor:</strong> {{flag.flagged_campaign.sponsor.username}}</p>
+              {% if flag.flagged_campaign.status == 'Paid' %}
+                <p class="card-text"><strong>Status:</strong> Completed</p>
+              {% else %}
+                {% if flag.flagged_campaign.status == 'pending' %}
+                  <p class="card-text"><strong>Status:</strong> Pending</p>
+                {% else %}
+                  <p class="card-text"><strong>Status:</strong> {{flag.flagged_campaign.status}}</p>
+                {% endif %}
+              {% endif %}
+              <p class="card-text"><strong>Visibility:</strong> {{flag.flagged_campaign.visibility}}</p>
+              
+              <a href="{{url_for('view_campaign', id=flag.campaign_id)}}" class="link-button3">
                      <i class="fa fa-search" ></i>
                         View
-                </a>
-              <a href="{{url_for('unflag_campaign_dashboard', id=flag.id)}}" class="btn btn-success">Unflag</a>
-                <a href="{{url_for('delete_campaign_admin', id=flag.flagged_campaign.id)}}" class="btn btn-danger">
-                    <i class="fas fa-trash"></i>
-                    Delete
-                </a>
+              </a>
+              <a href="{{url_for('unflag_campaign_dashboard', id=flag.id)}}" class="link-button4">Unflag</a>
+              <a href="{{url_for('delete_campaign_admin', id=flag.flagged_campaign.id)}}" class="link-button5">
+                  <i class="fas fa-trash"></i>
+                  Delete
+              </a>
             </div>
         </div>
         {% endfor %}
-
+      </div>
     </div>
 
 {% endblock %}
@@ -107,6 +105,137 @@
             float: right;
             margin-right: 200px;
         }
+
+        .card-custom {
+          width: 250px;
+          border-radius: 10px;
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+          margin: 20px;
+          padding: 20px;
+          text-align: center;
+          background-color: #ffffff;
+          transition: transform 0.3s, box-shadow 0.3s;
+          border-top: 5px solid #007bff;
+      }
+      .card-custom:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+      }
+      .card-title {
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: #343a40;
+      }
+      .card-text {
+          font-size: 0.95rem;
+          color: #6c757d;
+          margin-bottom: 15px;
+      }
+      .link-button1 {
+          color: green;
+          text-decoration: none;
+          font-weight: 500;
+          display: inline-flex;
+          align-items: center;
+          font-size: 0.9rem;
+          padding: 8px 16px;
+          border: 1px solid green;
+          border-radius: 10px;
+          transition: background-color 0.3s, color 0.3s;
+      }
+      .link-button1:hover {
+          background-color: green;
+          color: #ffffff;
+          text-decoration: none;
+      }
+      .link-button2 {
+          color: red;
+          text-decoration: none;
+          font-weight: 500;
+          display: inline-flex;
+          align-items: center;
+          font-size: 0.9rem;
+          padding: 8px 16px;
+          border: 1px solid red;
+          border-radius: 10px;
+          transition: background-color 0.3s, color 0.3s;
+      }
+      .link-button2:hover {
+          background-color: red;
+          color: #ffffff;
+          text-decoration: none;
+      }
+      .link-button2 i {
+        margin-right: 5px;
+    }
+
+      .link-button3 {
+        color: blue;
+        text-decoration: none;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.9rem;
+        padding: 8px 16px;
+        border: 1px solid blue;
+        border-radius: 10px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .link-button3:hover {
+        background-color: blue;
+        color: #ffffff;
+        text-decoration: none;
+    }
+    .link-button3 i {
+      margin-right: 5px;
+  }
+
+  .link-button4 {
+    color: green;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    border: 1px solid green;
+    border-radius: 10px;
+    transition: background-color 0.3s, color 0.3s;
+}
+.link-button4:hover {
+    background-color: green;
+    color: #ffffff;
+    text-decoration: none;
+}
+.link-button4 i {
+  margin-right: 5px;
+}
+.link-button5 {
+  color: red;
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  border: 1px solid red;
+  border-radius: 10px;
+  transition: background-color 0.3s, color 0.3s;
+}
+.link-button5:hover {
+  background-color: red;
+  color: #ffffff;
+  text-decoration: none;
+}
+.link-button5 i {
+margin-right: 5px;
+}
+
+      .row-custom {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-around;
+      }
         
         .user-list {
             display: flex;
@@ -123,6 +252,7 @@
         .card {
             margin: 10px;
         }
+        
    
     </style>
 {% endblock %}

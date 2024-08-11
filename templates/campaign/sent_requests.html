@@ -60,9 +60,13 @@
                     {% endif %}
                 </td>
                 {% if request.status == 'pending' %}
-                <td>Pending</td>
+                <td><strong style="display:inline-block; color:black; background-color:yellow; padding:5px 10px; border-radius:15px; font-size: 15px;">Pending</strong></td>
+                {% elif request.status == 'In Negotiation' %}
+                <td><strong style="display:inline-block; color:black; background-color:yellow; padding:5px 10px; border-radius:15px; font-size: 15px;">In Negotiation</strong></td>
+                {% elif request.status == 'Accepted' or request.status == 'Negotiated' %}
+                <td><strong style="display:inline-block; color:white; background-color:green; padding:5px 10px; border-radius:15px; font-size: 15px;">Accepted</strong></td>
                 {% else %}
-                <td>{{request.status}}</td>
+                <td><strong style="display:inline-block; color:white; background-color:red; padding:5px 10px; border-radius:15px; font-size: 15px;">{{request.status}}</strong></td>
                 {% endif %}
             </tr>
             {% endif %}

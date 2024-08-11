@@ -8,16 +8,20 @@
 
 {% block content %}
     <h1 class="display-1">{{campaign.title}}</h1>
-    <p><strong>Description : </strong>{{campaign.description}}</p>
-    <p><strong>Strat Date : </strong>{{(campaign.start_date|string)[:10]}}</p>
-    <p><strong>End Date : </strong>{{(campaign.end_date|string)[:10]}}</p>
-    <p><strong>Budget : </strong>{{campaign.budget}}</p>
-    <p><strong>Category : </strong>{{campaign.category}}</p>
-    <p><strong>Visibility : </strong>{{campaign.visibility}}</p>
+    <p><strong>Description:</strong> {{campaign.description}}</p>
+    <p><strong>Strat Date:</strong> {{(campaign.start_date|string)[:10]}}</p>
+    <p><strong>End Date:</strong> {{(campaign.end_date|string)[:10]}}</p>
+    <p><strong>Budget:</strong> &#8377;{{campaign.budget}}</p>
+    <p><strong>Category:</strong> {{campaign.category}}</p>
+    <p><strong>Visibility:</strong> {{campaign.visibility}}</p>
     {% if campaign.status == 'pending' %}
-    <p><strong>Status : </strong>Pending</p>
+    <p><strong>Status:</strong> Pending</p>
     {% else %}
-    <p><strong>Status : </strong>{{campaign.status}}</p>
+        {% if campaign.status == 'Paid' %}
+            <p><strong>Status:</strong> Completed</p>
+        {% else %}
+            <p><strong>Status:</strong> {{campaign.status}}</p>
+        {% endif %}
     {% endif %}
 
  

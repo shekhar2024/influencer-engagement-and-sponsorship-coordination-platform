@@ -7,48 +7,66 @@
 {% endblock %}
 
 {% block content %}
-    <h1 class="display-2">Requests in Negotiations</h1>
-    <div class="request-list">
+    <h1 class="display-2">Negotiations</h1>
+    <div class="container">
+        <div class="row row-custom">
         {% for request in requests %}
         {% if not request.campaign.flag or not request.status == 'In Negotiation' %}
         {% if request.status == 'In Negotiation' or request.status == 'Negotiated' or request.status == 'Negotiation Rejected' %}
         {% if not request.campaign.sponsor.flag or not request.status == 'In Negotiation' %}
-        <div class="card" style="width: 18rem;">
+        <div class="card card-custom">
             <div class="card-body">
-              <h5 class="card-title">{{request.campaign_title}}</h5>
-              <p class="card-text">
-                <strong>Requirements : </strong>{{request.requirements}}
-                <br>
-                <strong>Payment : </strong>{{request.payment}}
-                <br>
+                <h5 class="card-title">{{request.campaign_title}}</h5>
+                <p class="card-text"><strong>Requirements:</strong> {{request.requirements}}</p>
+                <p class="card-text"><strong>Payment:</strong> &#8377;{{request.payment}}</p>
                 {% if request.status == 'In Negotiation' %}
-                <strong>Status : </strong>In Negotiation
+                <p class="card-text"><strong style="display:inline-block; color:rgb(65, 67, 67); background-color:rgb(245, 245, 14); padding:5px 10px; border-radius:15px; font-size: 15px;">In Negotiation</strong></p>
                 {% elif request.status == 'Negotiated' %}
-                <strong>Status : </strong>Accepted
+                <p class="card-text"><strong style="display:inline-block; color:white; background-color:green; padding:5px 10px; border-radius:15px; font-size: 15px;">Accepted</strong></p>
                 {% elif request.status == 'Negotiation Rejected' %}
-                <strong>Status : </strong>Rejected
+                <p class="card-text"><strong style="display:inline-block; color:white; background-color:red; padding:5px 10px; border-radius:15px; font-size: 15px;">Rejected</strong></p>
                 {% endif %}
-              </p>
             </div>
         </div>
         {% endif %}
         {% endif %}
         {% endif %}
         {% endfor %}
-
+        </div>
     </div>
 
 {% endblock %}
 {% block style %}
     <style>
-        .request-list {
+        .card-custom {
+            width: 250px;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            padding: 20px;
+            text-align: center;
+            background-color: #ffffff;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 5px solid #007bff;
+        }
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #343a40;
+        }
+        .card-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+        .row-custom {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
-        }
-
-        .card {
-            margin: 10px;
         }
     </style>
 {% endblock %}

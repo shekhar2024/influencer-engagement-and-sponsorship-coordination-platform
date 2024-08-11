@@ -5,27 +5,23 @@
 {% endblock %}
 
 {% block content %}
-<div class="request-list">
+<div class="container">
+    <div class="row row-custom">
     {% for campaign in campaigns %}
     {% if campaign.status == 'Completed' or campaign.status == 'Paid' %}
     {% for request in campaign.ad_requests_bysponsor %}
     {% if request.status == 'Accepted' or request.status == 'Negotiated' %}
-    <div class="card" style="width: 18rem;">
+    <div class="card card-custom">
         <div class="card-body">
           <h5 class="card-title">{{request.campaign_title}}</h5>
-          <p class="card-text">
-            <strong>Requirements : </strong>{{request.requirements}}
-            <br>
-            <strong>Influencer : </strong>{{request.influencer.username}}
-            <br>
-            <strong>Payment : </strong>{{request.payment}}
+            <p class="card-text"><strong>Requirements:</strong> {{request.requirements}}</p>
+            <p class="card-text"><strong>Influencer: </strong> {{request.influencer.username}}</p>
+            <p class="card-text"><strong>Payment:</strong> &#8377;{{request.payment}}</p>
             {% if request.campaign.status == 'Paid' %}
-            <br>
-            <strong>Paid</strong>
+            <p class="card-text" style="font-size:1rem; color:green"><strong>Paid</strong><i class="fa-solid fa-circle-check"></i></p>
             {% endif %}
-          </p>
           {% if request.campaign.status == 'Completed' %}
-          <a href="{{url_for('payment', id=campaign.id)}}" class="btn btn-success">
+          <a href="{{url_for('payment', id=campaign.id)}}" class="link-button">
             Payment
         </a>
         {% endif %}
@@ -35,22 +31,17 @@
     {% endfor %}
     {% for request in campaign.ad_requests_byinfluencer %}
     {% if request.status == 'Accepted' or request.status == 'Negotiated' %}
-    <div class="card" style="width: 18rem;">
+    <div class="card card-custom">
         <div class="card-body">
           <h5 class="card-title">{{request.campaign_title}}</h5>
-          <p class="card-text">
-            <strong>Requirements : </strong>{{request.requirements}}
-            <br>
-            <strong>Influencer : </strong>{{request.influencer.username}}
-            <br>
-            <strong>Payment : </strong>{{request.payment}}
+            <p class="card-text"><strong>Requirements:</strong> {{request.requirements}}</p>
+            <p class="card-text"><strong>Influencer:</strong> {{request.influencer.username}}</p>
+            <p class="card-text"><strong>Payment:</strong> &#8377;{{request.payment}}</p>
             {% if request.campaign.status == 'Paid' %}
-            <br>
-            <strong>Paid</strong>
+            <p class="card-text" style="font-size:1rem; color:green"><strong>Paid</strong><i class="fa-solid fa-circle-check"></i></p>
             {% endif %}
-          </p>
           {% if request.campaign.status == 'Completed' %}
-          <a href="{{url_for('payment', id=campaign.id)}}" class="btn btn-success">
+          <a href="{{url_for('payment', id=campaign.id)}}" class="link-button">
             Payment
         </a>
         {% endif %}
@@ -67,14 +58,53 @@
 
 {% block style %}
     <style>
-        .request-list {
+        .card-custom {
+            width: 250px;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            padding: 20px;
+            text-align: center;
+            background-color: #ffffff;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 5px solid #007bff;
+        }
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #343a40;
+        }
+        .card-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+        .link-button {
+            color: green;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border: 1px solid green;
+            border-radius: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .link-button:hover {
+            background-color: green;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        
+        .row-custom {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
-        }
-
-        .card {
-            margin: 10px;
         }
     </style>
 {% endblock %}

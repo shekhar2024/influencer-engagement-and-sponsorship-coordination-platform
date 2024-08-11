@@ -4,54 +4,102 @@
     {% include 'user_searchbar.html' with context %}
     <hr>
     <h1 class="display-2">Users</h1>
-    <div class="user-list">
+    <div class="container">
+        <div class="row row-custom">
         {% for user in users %}
         {% if not user.is_admin %}
-        <div class="card" style="width: 18rem;">
+        <div class="card card-custom">
             <div class="card-body">
               <h5 class="card-title">{{user.username}}</h5>
-              <p class="card-text">
-                Name : {{user.name}}
-                <br>
-                {% if user.is_sponsor %}
-                Industry : {{user.industry}}
-                <br>
-                Budget : &#8377;{{user.budget}}
-                <br>
-                Roll : Sponsor
-                {% else %}
-                Category : {{user.category}}
-                <br>
-                Niche : {{user.niche}}
-                <br>
-                Reach : {{user.reach}}
-                <br>
-                Roll : Influencer
-                {% endif %}
-              </p>
-              {% if user.flag %}
-              <a href="{{url_for('unflag_user', id=user.id)}}" class="btn btn-success">Unflag</a>
-              {% else %}
-              <a href="{{url_for('flag_user', id=user.id)}}" class="btn btn-danger">Flag</a>
-                {% endif %}
+              <p class="card-text"><strong>Name:</strong> {{user.name}}</p>
+            {% if user.is_sponsor %}
+              <p class="card-text"><strong>Industry:</strong> {{user.industry}}</p>
+              <p class="card-text"><strong>Budget:</strong> &#8377;{{user.budget}}</p>
+              <p class="card-text"><strong>Roll:</strong> Sponsor</p>
+            {% else %}
+              <p class="card-text"><strong>Category:</strong> {{user.category}}</p>
+              <p class="card-text"><strong>Niche:</strong> {{user.niche}}</p>
+              <p class="card-text"><strong>Reach:</strong> {{user.reach}}</p>
+              <p class="card-text"><strong>Roll:</strong> Influencer</p>
+            {% endif %}
+            {% if user.flag %}
+              <a href="{{url_for('unflag_user', id=user.id)}}" class="link-button1">Unflag</a>
+            {% else %}
+              <a href="{{url_for('flag_user', id=user.id)}}" class="link-button2">Flag</a>
+            {% endif %}
             </div>
         </div>
         {% endif %}
         {% endfor %}
-
+        </div>
     </div>
 
 {% endblock %}
 {% block style %}
     <style>
-        .user-list {
+        .card-custom {
+            width: 250px;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            padding: 20px;
+            text-align: center;
+            background-color: #ffffff;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 5px solid #007bff;
+        }
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #343a40;
+        }
+        .card-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+        .link-button1 {
+            color: green;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border: 1px solid green;
+            border-radius: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .link-button1:hover {
+            background-color: green;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .link-button2 {
+            color: red;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border: 1px solid red;
+            border-radius: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .link-button2:hover {
+            background-color: red;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .row-custom {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
-        }
-
-        .card {
-            margin: 10px;
         }
     </style>
 {% endblock %}

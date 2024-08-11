@@ -343,14 +343,17 @@ def sponsor():
 @sponsor_required
 def payment(id):
     campaign = Campaign.query.get(id)
+    sponsor = campaign.sponsor
     for request in campaign.ad_requests_byinfluencer:
         if request.status == 'Accepted' or request.status == 'Negotiated':
             pay = request.payment
+            influencer = request.influencer
             break
 
     for request in campaign.ad_requests_bysponsor:
         if request.status == 'Accepted' or request.status == 'Negotiated':
             pay = request.payment
+            influencer = request.influencer
             break
 
     if not campaign:
@@ -361,7 +364,7 @@ def payment(id):
         flash('This campaign is not completed yet or already paid')
         return redirect(url_for('completed_requests_sponsor'))
 
-    return render_template('campaign/payment.html', campaign=campaign, pay = pay)
+    return render_template('campaign/payment.html', campaign=campaign, pay = pay, influencer=influencer, sponsor=sponsor)
 
 @app.route('/campaign/payment/<int:id>', methods=['POST'])
 @sponsor_required
@@ -371,11 +374,13 @@ def payment_post(id):
     for request in campaign.ad_requests_byinfluencer:
         if request.status == 'Accepted' or request.status == 'Negotiated':
             pay = request.payment
+            influencer = request.influencer
             break
 
     for request in campaign.ad_requests_bysponsor:
         if request.status == 'Accepted' or request.status == 'Negotiated':
             pay = request.payment
+            influencer = request.influencer
             break
 
     if not campaign:
@@ -389,7 +394,7 @@ def payment_post(id):
     campaign.status = 'Paid'
     db.session.commit()
 
-    flash('Payment of ₹'+str(pay)+ ' made successfully')
+    flash("Payment of ₹"+str(pay)+ ' made successfully to '+influencer.username)
     return redirect(url_for('completed_requests_sponsor'))
 
 
@@ -1308,7 +1313,14 @@ def request_campaign_post(id):
 def recieved_requests_influencer():
     influencer = User.query.get(session['user_id'])
     requests = influencer.ad_requests_bysponsor
-    return render_template('influencer/recieved_requests.html', requests=requests)
+    y = 0
+    for request in requests:
+        if not request.campaign.sponsor.flag:
+            if not request.campaign.flag:
+                if request.status == 'pending' and request.campaign.status == 'pending':
+                    y+=1
+                
+    return render_template('influencer/recieved_requests.html', requests=requests, y=y)
 
 @app.route('/influencer/accept_request/<int:request_id>', methods=['GET','POST'])
 @influencer_required
@@ -1683,8 +1695,9 @@ def new_requests_influencer():
     y = 0
     for request in requests:
         if not request.campaign.sponsor.flag:
-            if request.status == 'pending' and request.campaign.status == 'pending':
-                y+=1
+            if not request.campaign.flag:
+                if request.status == 'pending' and request.campaign.status == 'pending':
+                    y+=1
     return render_template('influencer/new_requests.html', requests=requests, y=y)
 
 @app.route('/influencer/completed_requests')

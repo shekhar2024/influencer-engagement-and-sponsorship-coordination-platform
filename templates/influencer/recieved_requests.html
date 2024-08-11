@@ -7,30 +7,31 @@
 {% endblock %}
 
 {% block content %}
+    {% if y == 0 %}
+    <h1 class="display-4">No New Requests</h1>
+    {% else %}
     <h1 class="display-2">Recieved Requests</h1>
-    <div class="request-list">
+    <div class="container">
+        <div class="row row-custom">
         {% for request in requests %}
         {% if not request.campaign.flag %}
         {% if not request.campaign.sponsor.flag %}
         {% if request.status == 'pending' %}
         {% if request.campaign.status == 'pending' %}
-        <div class="card" style="width: 22rem;">
+        <div class="card card-custom">
             <div class="card-body">
               <h5 class="card-title">{{request.campaign_title}}</h5>
-              <p class="card-text">
-                Requirements : {{request.requirements}}
-                <br>
-                Payment : {{request.payment}}
-              </p>
-              <a href="{{url_for('accept_request_influencer', request_id=request.id)}}" class="btn btn-success">
+                <p class="card-text"><strong>Requirements:</strong> {{request.requirements}}</p>
+                <p class="card-text"><strong>Payment:</strong> &#8377;{{request.payment}}</p>
+              <a href="{{url_for('accept_request_influencer', request_id=request.id)}}" class="link-button1">
                 <i class="fa-sharp fa-solid fa-check" ></i>
                 Accept
             </a>
-            <a href="{{url_for('reject_request_influencer', request_id=request.id)}}" class="btn btn-danger">
+            <a href="{{url_for('reject_request_influencer', request_id=request.id)}}" class="link-button2">
                 <i class="fa-solid fa-xmark"></i>
                 Reject
             </a>
-            <a href="{{url_for('negotiate_request_influencer', request_id=request.id)}}" class="btn btn-primary">
+            <a href="{{url_for('negotiate_request_influencer', request_id=request.id)}}" class="link-button3">
                 <i class="fa-solid fa-handshake"></i>
                 Negotiate
             </a>
@@ -41,20 +42,104 @@
         {% endif %}
         {% endif %}
         {% endfor %}
-
+        </div>
     </div>
+    {% endif %}
 
 {% endblock %}
 {% block style %}
     <style>
-        .request-list {
+        .card-custom {
+            width: 250px;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            padding: 20px;
+            text-align: center;
+            background-color: #ffffff;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 5px solid #007bff;
+        }
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #343a40;
+        }
+        .card-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+        .link-button1 {
+            color: green;
+            text-decoration: none;
+            font-weight: 500;
+            display:block;
+            align-items: center;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border: 1px solid green;
+            border-radius: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .link-button1:hover {
+            background-color: green;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .link-button1 i {
+            margin-right: 5px;
+        }
+        .link-button2 i {
+            margin-right: 5px;
+        }
+        .link-button3 i {
+            margin-right: 5px;
+        }
+        .link-button2 {
+            color: red;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 5px;
+            display: block;
+            align-items: center;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border: 1px solid red;
+            border-radius: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .link-button2:hover {
+            background-color: red;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .link-button3 {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top:5px;
+            display: block;
+            align-items: center;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border: 1px solid #007bff;
+            border-radius: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .link-button3:hover {
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .row-custom {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
-        }
-
-        .card {
-            margin: 10px;
         }
     </style>
 {% endblock %}
