@@ -75,7 +75,8 @@ with app.app_context():
         admin = User(username='admin', name="Admin", passhash=password_hash,is_admin=True)
         db.session.add(admin)
         db.session.commit()
-
+ 
+    
     
 
     

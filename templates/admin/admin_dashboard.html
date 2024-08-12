@@ -1,6 +1,30 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+
+<table class="table">
+  <thead>
+      <tr>
+          <th style="color:rgb(64, 148, 244); font-size:1.3rem;">Sponsor</th>
+          <th style="color:rgb(64, 148, 244); font-size:1.3rem;">Influencers</th>
+          <th style="color:rgb(64, 148, 244); font-size:1.3rem;">Public Campaigns</th>
+          <th style="color:rgb(64, 148, 244); font-size:1.3rem;">Private Campaigns</th>
+          <th style="color:rgb(64, 148, 244); font-size:1.3rem;">AD Requests Sent</th>
+          <th style="color:rgb(64, 148, 244); font-size:1.3rem;">AD Request Accepted</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="color:coral;"><strong style="font-size:1.3rem;">{{sponsors|length}}</strong></td>
+          <td style="color:coral;"><strong style="font-size:1.3rem;">{{influencers|length}}</strong></td>
+          <td style="color:coral;"><strong style="font-size:1.3rem;">{{public_campaigns}}</strong></td>
+          <td style="color:coral;"><strong style="font-size:1.3rem;">{{private_campaigns}}</strong></td>
+          <td style="color:coral;"><strong style="font-size:1.3rem;">{{request_sponsor|length + request_influencer|length}}</strong></td>
+          <td style="color:coral;"><strong style="font-size:1.3rem;">{{request_accepted_sponsor + request_accepted_influencer}}</strong></td>
+      </tr>
+  </tbody>
+</table>
+
     <div>
         <div class="chart1">
         <canvas id="myChart1" width="100" height="100"></canvas>

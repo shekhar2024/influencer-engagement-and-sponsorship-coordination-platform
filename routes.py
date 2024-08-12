@@ -28,10 +28,6 @@ def login_post():
         return redirect(url_for('login'))
 
     user = User.query.filter_by(username=username).first()
-    
-    if user.flag:
-        flash("Your account has been flagged, you can't login")
-        return redirect(url_for('login'))
 
     if not user:
         flash('User does not exist')
@@ -39,6 +35,10 @@ def login_post():
 
     if not check_password_hash(user.passhash, password):
         flash('Incorrect password')
+        return redirect(url_for('login'))
+
+    if user.flag:
+        flash("Your account has been flagged, you can't login")
         return redirect(url_for('login'))
 
     #send the session cookie
@@ -907,6 +907,19 @@ def find_influencers():
     if parameter == 'category':
         influencers = User.query.filter(User.category.ilike(f'%{query}%')).all()
         return render_template('find_influencers.html', influencers=influencers)
+    if parameter == 'min_reach':
+        try:
+            query = int(query)
+        except ValueError:
+            flash('Invalid entry')
+            return render_template('find_influencers.html', influencers=influencers)
+
+        if query < 0:
+            flash('minimum reach cannot be negative')
+            return render_template('find_influencers.html', influencers=influencers)
+        
+        influencers = User.query.filter(User.reach >= query).all()
+        return render_template('find_influencers.html', influencers=influencers)
     if parameter == 'niche':
         influencers = User.query.filter(User.niche.ilike(f'%{query}%')).all()
         return render_template('find_influencers.html', influencers=influencers)
@@ -1008,6 +1021,19 @@ def find_users():
     if parameter == 'industry':
         users = User.query.filter(User.industry.ilike(f'%{query}%')).all()
         return render_template('admin/find_users.html', users=users)
+    if parameter == 'min_reach':
+        try:
+            query = int(query)
+        except ValueError:
+            flash('Invalid entry')
+            return render_template('admin/find_users.html', users=users)
+
+        if query < 0:
+            flash('minimum reach cannot be negative')
+            return render_template('admin/find_users.html', users=users)
+        
+        users = User.query.filter(User.reach >= query).all()
+        return render_template('admin/find_users.html', users=users)
     if parameter == 'category':
         users = User.query.filter(User.category.ilike(f'%{query}%')).all()
         return render_template('admin/find_users.html', users=users)
@@ -1041,7 +1067,7 @@ def flag_user_post(id):
     flash('User flagged successfully')
     return redirect(url_for('find_users'))
 
-@app.route('/unflag_user/<int:id>')
+@app.route('/unflag_user/<int:id>', methods=['GET','POST'])
 @admin_required
 def unflag_user(id):
     user = User.query.get(id)
@@ -1066,8 +1092,22 @@ def find_campaigns():
     if parameter == 'category':
         campaigns = Campaign.query.filter(Campaign.category.ilike(f'%{query}%')).all()
         return render_template('admin/find_campaigns.html', campaigns=campaigns)
+    if parameter == 'min_budget':
+        try:
+            query = int(query)
 
-    return render_template('admin/find_campaigns.html', campaigns=campaigns)
+        except ValueError:
+            flash('Invalid entry')
+            return render_template('admin/find_campaigns.html', campaigns=campaigns)
+
+        if query < 0:
+            flash('minimum budget cannot be negative')
+            return render_template('admin/find_campaigns.html', campaigns=campaigns)
+
+        campaigns = Campaign.query.filter(Campaign.budget >= query).all()
+        return render_template('admin/find_campaigns.html', campaigns=campaigns)
+
+    return render_template('admin/find_campaigns.html', campaigns=campaigns) 
 
 @app.route('/flag_campaign/<int:id>')
 @admin_required
@@ -1091,7 +1131,7 @@ def flag_campaign_post(id):
     flash('Campaign flagged successfully')
     return redirect(url_for('find_campaigns'))
 
-@app.route('/unflag_campaign/<int:id>')
+@app.route('/unflag_campaign/<int:id>', methods=['GET','POST'])
 @admin_required
 def unflag_campaign(id):
     campaign = Campaign.query.get(id)
@@ -1113,7 +1153,11 @@ def admin_dashboard():
     influencers = User.query.filter_by(is_influencer=True).all()
     public_campaigns = Campaign.query.filter_by(visibility='Public').count()
     private_campaigns = Campaign.query.filter_by(visibility='Private').count()
-    return render_template('admin/admin_dashboard.html', flagged_users=flagged_users, flagged_campaigns=flagged_campaigns, sponsors=sponsors, influencers=influencers, public_campaigns=public_campaigns, private_campaigns=private_campaigns)
+    request_sponsor = Ad_Request_bysponsor.query.all()
+    request_influencer = Ad_Request_byinfluencer.query.all()
+    request_accepted_sponsor = Ad_Request_byinfluencer.query.filter_by(status='Accepted').count()
+    request_accepted_influencer = Ad_Request_bysponsor.query.filter_by(status='Accepted').count()
+    return render_template('admin/admin_dashboard.html', flagged_users=flagged_users, flagged_campaigns=flagged_campaigns, sponsors=sponsors, influencers=influencers, public_campaigns=public_campaigns, private_campaigns=private_campaigns, request_sponsor=request_sponsor, request_influencer=request_influencer, request_accepted_sponsor=request_accepted_sponsor, request_accepted_influencer=request_accepted_influencer)
 
 @app.route('/admin_dashboard/unflag_user/<int:id>')
 @admin_required
@@ -1251,6 +1295,20 @@ def find_campaigns_influencer():
         return render_template('influencer/find_campaigns.html', campaigns=campaigns)
     if parameter == 'category':
         campaigns = Campaign.query.filter(Campaign.category.ilike(f'%{query}%')).all()
+        return render_template('influencer/find_campaigns.html', campaigns=campaigns)
+    if parameter == 'min_budget':
+        try:
+            query = int(query)
+
+        except ValueError:
+            flash('Invalid entry')
+            return render_template('influencer/find_campaigns.html', campaigns=campaigns)
+
+        if query < 0:
+            flash('minimum budget cannot be negative')
+            return render_template('influencer/find_campaigns.html', campaigns=campaigns)
+
+        campaigns = Campaign.query.filter(Campaign.budget >= query).all()
         return render_template('influencer/find_campaigns.html', campaigns=campaigns)
         
     return render_template('influencer/find_campaigns.html', campaigns=campaigns)
