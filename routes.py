@@ -176,8 +176,9 @@ def index():
         return redirect(url_for('sponsor'))
     elif user.is_admin:
         return redirect(url_for('admin_dashboard'))
-    else:
+    elif user.is_influencer:
         return redirect(url_for('influencer'))
+    return redirect(url_for('login'))
 
 @app.route('/sponsor_profile')
 @sponsor_required
