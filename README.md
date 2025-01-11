@@ -1,10 +1,13 @@
 # Project Name
 
-This is the README file for the project Influencer Engagement and Sponsorship Coordination Platform. 
+Influencer Engagement and Sponsorship Coordination Platform. 
 
 ## Description
 
-This platform allows sponsor and influencer to engage with eachother.
+This platform serves as a bridge between sponsor and influencer. Sponsors can
+find influencers to advertise their product and influencer can find suitable
+campaigns and get paid for promoting the product.This platform makes it easy
+for sponsors and influencers to connect with each other.
 
 ## Installation
 
