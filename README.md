@@ -27,7 +27,7 @@ Step 4 - Activate virtual environment (for powershell)
 
 ```.\.venv\Scripts\Activate.ps1``` 
 
-on On macOS and Linux
+On macOS and Linux
 
 ```source .venv/bin/activate```
 
