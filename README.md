@@ -15,13 +15,19 @@ Step 1 - Clone the repo
 ```git clone https://github.com/shekhar2024/influencer-engagement-and-sponsorship-coordination-platform```
 
 Step 2 - Create Virtual Environment
+
 ```python -m venv .venv```
 
-Step 3 - Activate virtual environment
+Step 3 - Activate virtual environment (for powershell)
+
 ```.\.venv\Scripts\Activate.ps1``` 
+
+ on On macOS and Linux
+
 
 Step 4 - Install the dependencies
 ```pip install -r requirements.txt```
+
 
 Step 
 
