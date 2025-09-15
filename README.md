@@ -12,6 +12,7 @@ for sponsors and influencers to connect with each other.
 ## Usage
 
 Step 1 - Clone the repo
+
 ```git clone https://github.com/shekhar2024/influencer-engagement-and-sponsorship-coordination-platform```
 
 Step 2 - Create Virtual Environment
@@ -22,17 +23,19 @@ Step 3 - Activate virtual environment (for powershell)
 
 ```.\.venv\Scripts\Activate.ps1``` 
 
- on On macOS and Linux
+on On macOS and Linux
 
+```source .venv/bin/activate```
 
 Step 4 - Install the dependencies
+
 ```pip install -r requirements.txt```
 
+Step 5 - rename .env.sample to .env and put a value of your choice for secret key.
 
-Step 
+Step 6 - run the application 
 
-## Usage
+```flask run```
 
-You can run this app by flask run command in the terminal.
 
 
