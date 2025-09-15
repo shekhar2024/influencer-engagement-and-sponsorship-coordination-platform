@@ -15,11 +15,15 @@ Step 1 - Clone the repo
 
 ```git clone https://github.com/shekhar2024/influencer-engagement-and-sponsorship-coordination-platform```
 
-Step 2 - Create Virtual Environment
+Step 2 - cd into cloned directory
+
+```cd influencer-engagement-and-sponsorship-coordination-platform```
+
+Step 3 - Create Virtual Environment
 
 ```python -m venv .venv```
 
-Step 3 - Activate virtual environment (for powershell)
+Step 4 - Activate virtual environment (for powershell)
 
 ```.\.venv\Scripts\Activate.ps1``` 
 
@@ -27,13 +31,13 @@ on On macOS and Linux
 
 ```source .venv/bin/activate```
 
-Step 4 - Install the dependencies
+Step 5 - Install the dependencies
 
 ```pip install -r requirements.txt```
 
-Step 5 - rename .env.sample to .env and put a value of your choice for secret key.
+Step 6 - rename .env.sample to .env and put a value of your choice for secret key.
 
-Step 6 - run the application 
+Step 7 - run the application 
 
 ```flask run```
 
